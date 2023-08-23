@@ -11,7 +11,7 @@ const data = [
 ];
 
 const subMenuData = [
-  { id: 1, name: "Shirt", doc_count: 11 },
+  { id: 1, name: "Tops", doc_count: 11 },
   { id: 2, name: "T-Shirt", doc_count: 8 },
   { id: 3, name: "Jeans", doc_count: 64 },
   { id: 4, name: "Trousers", doc_count: 107 },

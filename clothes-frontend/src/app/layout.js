@@ -1,6 +1,7 @@
 import Header from "@/components/Header/Index";
 import Footer from "@/components/Footer/Index";
 import "./globals.css";
+import "react-multi-carousel/lib/styles.css";
 import { Oswald, Inter } from "next/font/google";
 
 const oswald = Oswald({
