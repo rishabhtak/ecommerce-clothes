@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const HeroSection = () => {
   return (
-    <div className="px-5 pt-5 pb-10 mx-auto flex flex-wrap">
+    <div className="px-5 pt-5 pb-10">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         <div className="col-span-8 relative h-full w-full">
           <div className="text-center absolute w-full h-full bg-black/25 grid content-center">

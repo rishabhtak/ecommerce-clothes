@@ -25,12 +25,8 @@ const ButtonGroup = ({ next, previous }) => {
 
 const ProductCarousel = ({ data }) => {
   const responsive = {
-    xxl: {
-      breakpoint: { max: 4000, min: 1440 },
-      items: 5,
-    },
     xl: {
-      breakpoint: { max: 1440, min: 1024 },
+      breakpoint: { max: 4000, min: 1024 },
       items: 4,
     },
     lg: {
