@@ -10,6 +10,9 @@ module.exports = {
       fontFamily: {
         oswald: ["var(--font-oswald)"],
       },
+      gridTemplateRows: {
+        "[auto,auto,1fr]": "auto auto 1fr",
+      },
     },
   },
   plugins: [

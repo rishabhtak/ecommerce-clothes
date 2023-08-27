@@ -65,3 +65,18 @@
 }
 
 /* Animation End */
+
+.dotClass {
+  bottom: -6rem !important;
+}
+
+@media screen and (min-width: 768px) {
+  .dotClass {
+    left: -6rem !important;
+  }
+}
+@media screen and (min-width: 1366px) {
+  .dotClass {
+    left: -15rem !important;
+  }
+}

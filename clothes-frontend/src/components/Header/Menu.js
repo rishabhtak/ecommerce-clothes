@@ -10,11 +10,18 @@ const data = [
   { id: 5, name: "Contact", url: "/" },
 ];
 
-const subMenuData = [
-  { id: 1, name: "Tops", doc_count: 11 },
-  { id: 2, name: "T-Shirt", doc_count: 8 },
-  { id: 3, name: "Jeans", doc_count: 64 },
-  { id: 4, name: "Trousers", doc_count: 107 },
+const subMenuMenData = [
+  { id: 1, name: "Shirts", doc_count: 11, url: "/men-clothing/shirts" },
+  { id: 2, name: "T-Shirt", doc_count: 8, url: "/men-clothing/tshirt" },
+  { id: 3, name: "Jeans", doc_count: 64, url: "/men-clothing/jeans" },
+  { id: 4, name: "Trousers", doc_count: 107, url: "/men-clothing/trousers" },
+];
+
+const subMenuWomenData = [
+  { id: 1, name: "Tops", doc_count: 11, url: "/women-clothing/tops" },
+  { id: 2, name: "T-Shirt", doc_count: 8, url: "/women-clothing/tshirt" },
+  { id: 3, name: "Jeans", doc_count: 64, url: "/women-clothing/jeans" },
+  { id: 4, name: "Trousers", doc_count: 107, url: "/women-clothing/trousers" },
 ];
 
 const Menu = ({ showMenCat, showWomenCat, setShowMenCat, setShowWomenCat }) => {
@@ -34,11 +41,11 @@ const Menu = ({ showMenCat, showWomenCat, setShowMenCat, setShowWomenCat }) => {
                   <BsChevronDown size={14} />
                   {showMenCat && (
                     <ul className="bg-white absolute top-6 left-0 min-w-[250px] text-black shadow-lg">
-                      {subMenuData.map((submenu) => {
+                      {subMenuMenData.map((submenu) => {
                         return (
                           <Link
                             key={submenu.id}
-                            href="/"
+                            href={submenu.url}
                             onClick={() => setShowMenCat(false)}
                           >
                             <li className="h-12 flex justify-between items-center px-3 hover:bg-black/[0.03] border-b">
@@ -63,11 +70,11 @@ const Menu = ({ showMenCat, showWomenCat, setShowMenCat, setShowWomenCat }) => {
                   <BsChevronDown size={14} />
                   {showWomenCat && (
                     <ul className="bg-white absolute top-6 left-0 min-w-[250px] text-black shadow-lg">
-                      {subMenuData.map((submenu) => {
+                      {subMenuWomenData.map((submenu) => {
                         return (
                           <Link
                             key={submenu.id}
-                            href="/"
+                            href={submenu.url}
                             onClick={() => setShowWomenCat(false)}
                           >
                             <li className="h-12 flex justify-between items-center px-3 hover:bg-black/[0.03] border-b">
