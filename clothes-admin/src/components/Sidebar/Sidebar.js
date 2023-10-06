@@ -1,10 +1,37 @@
+"use client";
+import { useState } from "react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const Sidebar = () => {
+  const pathname = usePathname();
+  const [showMenu, setShowMenu] = useState("hidden");
+  const [hideButton, setHideButton] = useState("block");
   return (
-    <div className="flex overflow-hidden bg-white">
-      <div className="hidden md:flex md:flex-shrink-0">
-        <div className="flex flex-col w-64 h-screen">
+    <div>
+      <button
+        onClick={() => {
+          setShowMenu("block");
+          setHideButton("hidden");
+        }}
+        className={`${hideButton} md:hidden float-right pr-4`}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            fillRule="evenodd"
+            d="M3 6.75A.75.75 0 013.75 6h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 6.75zM3 12a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 12zm0 5.25a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
+      <div className={`${showMenu} md:block fixed w-full md:w-64`}>
+        <div className="flex flex-col h-screen">
           <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-indigo-700 border-r">
             <div className="flex flex-col items-center flex-shrink-0 px-4">
               <Link className="px-8 text-left focus:outline-none" href="/">
@@ -35,10 +62,17 @@ const Sidebar = () => {
               <nav className="flex-1 space-y-1 bg-indigo-700">
                 <ul>
                   <li>
-                    <a
-                      className="inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline hover:bg-indigo-600"
-                      white
-                      href="#"
+                    <Link
+                      className={`inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline ${
+                        pathname === "/"
+                          ? "bg-indigo-600"
+                          : "hover:bg-indigo-600"
+                      }`}
+                      href="/"
+                      onClick={() => {
+                        setShowMenu("hidden");
+                        setHideButton("block");
+                      }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -60,14 +94,21 @@ const Sidebar = () => {
                           d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
                         />
                       </svg>
-                      <span className="ml-4"> Dashboard</span>
-                    </a>
+                      <span className="ml-4">Dashboard</span>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      className="inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline hover:bg-indigo-600"
-                      white
-                      href="#"
+                    <Link
+                      className={`inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline ${
+                        pathname === "/products"
+                          ? "bg-indigo-600"
+                          : "hover:bg-indigo-600"
+                      }`}
+                      href="/products"
+                      onClick={() => {
+                        setShowMenu("hidden");
+                        setHideButton("block");
+                      }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -83,12 +124,16 @@ const Sidebar = () => {
                           d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                         />
                       </svg>
-                      <span className="ml-4">Product</span>
-                    </a>
+                      <span className="ml-4">Products</span>
+                    </Link>
                   </li>
                   <li>
                     <a
-                      className="inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline hover:bg-indigo-600"
+                      className={`inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline ${
+                        pathname === "/users"
+                          ? "bg-indigo-600"
+                          : "hover:bg-indigo-600"
+                      }`}
                       href="#"
                     >
                       <svg
@@ -105,13 +150,16 @@ const Sidebar = () => {
                           d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                         />
                       </svg>
-                      <span className="ml-4">User</span>
+                      <span className="ml-4">Users</span>
                     </a>
                   </li>
                   <li>
                     <a
-                      className="inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline hover:bg-indigo-600"
-                      white
+                      className={`inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline ${
+                        pathname === "/orders"
+                          ? "bg-indigo-600"
+                          : "hover:bg-indigo-600"
+                      }`}
                       href="#"
                     >
                       <svg
@@ -133,62 +181,56 @@ const Sidebar = () => {
                   </li>
                   <li>
                     <a
-                      className="inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline hover:bg-indigo-600"
+                      className={`inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline ${
+                        pathname === "/settings"
+                          ? "bg-indigo-600"
+                          : "hover:bg-indigo-600"
+                      }`}
                       href="#"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4"
                         fill="none"
                         viewBox="0 0 24 24"
+                        strokeWidth="1.5"
                         stroke="currentColor"
+                        className="w-4 h-4"
                       >
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
                         />
                       </svg>
                       <span className="ml-4">Settings</span>
                     </a>
                   </li>
                   <li>
-                    <a
-                      className="inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline hover:bg-indigo-600"
-                      href="#"
-                    >
+                    <div className="inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline hover:bg-indigo-600">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4"
                         fill="none"
                         viewBox="0 0 24 24"
+                        strokeWidth="1.5"
                         stroke="currentColor"
+                        className="w-4 h-4"
                       >
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
                         />
                       </svg>
-                      <span className="ml-4">Logout</span>
-                    </a>
+
+                      <button
+                        onClick={() => signOut("google")}
+                        className="ml-4"
+                      >
+                        Logout
+                      </button>
+                    </div>
                   </li>
                 </ul>
-              
               </nav>
             </div>
             <div className="flex flex-shrink-0 p-4 px-4 bg-indigo-600">
@@ -205,24 +247,6 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="flex flex-col flex-1 w-0 overflow-hidden">
-        <main className="relative flex-1 overflow-y-auto focus:outline-none">
-          <div className="py-6">
-            <div className="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
-              <h1 className="text-lg text-neutral-600">
-                Here is where you put your stuff
-              </h1>
-            </div>
-            <div className="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
-              {/* Put your content here */}
-              <div className="py-4">
-                <div className="rounded-lg bg-gray-50 h-96" />
-              </div>
-              {/* Do not cross the closing tag underneath this coment*/}
-            </div>
-          </div>
-        </main>
       </div>
     </div>
   );
