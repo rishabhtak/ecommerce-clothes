@@ -4,7 +4,9 @@ import Link from "next/link";
 const page = () => {
   return (
     <>
-      <div className="text-2xl font-semibold">Products</div>
+      <h2 className="text-2xl font-semibold">
+        Products
+      </h2>
       <Link className="float-right styleButton" href="/products">
         Add Product
       </Link>
