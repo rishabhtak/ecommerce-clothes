@@ -1,9 +1,97 @@
-import React from "react";
+"use client";
+import { useState } from "react";
+import Select from "antd/es/Select";
+
+const colorsOption = [
+  {
+    value: "#FFFFFF",
+    label: "White",
+  },
+  {
+    value: "#000000",
+    label: "Black",
+  },
+  {
+    value: "#00FFFF",
+    label: "Blue",
+  },
+  {
+    value: "#EADDCA",
+    label: "Yellow",
+  },
+  {
+    value: "#FF0000",
+    label: "Red",
+  },
+];
+
+const sizeOption = [
+  {
+    value: "s",
+    label: "S",
+  },
+  {
+    value: "m",
+    label: "M",
+  },
+  {
+    value: "l",
+    label: "L",
+  },
+  {
+    value: "xl",
+    label: "XL",
+  },
+  {
+    value: "xxl",
+    label: "XXL",
+  },
+  {
+    value: "28",
+    label: "28",
+  },
+  {
+    value: "30",
+    label: "30",
+  },
+  {
+    value: "32",
+    label: "32",
+  },
+  {
+    value: "34",
+    label: "34",
+  },
+  {
+    value: "36",
+    label: "36",
+  },
+];
 
 const ProductForm = () => {
+  const [productName, setProductName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [category, setCategory] = useState("men");
+  const [subcategory, setSubcategory] = useState("tshirt");
+  const [colors, setColors] = useState([]);
+  const [size, setSize] = useState([]);
+
+  async function createProduct(e) {
+    e.preventDefault();
+    const data = {
+      productName,
+      price,
+      category,
+      subcategory,
+      colors,
+      size,
+    };
+    console.log(data);
+  }
+
   return (
     <div className="py-16">
-      <form className="space-y-6 dark:text-gray-100">
+      <form className="space-y-6 dark:text-gray-100" onSubmit={createProduct}>
         <div className="space-y-1">
           <label htmlFor="name" className="font-medium">
             Product Name *
@@ -11,23 +99,27 @@ const ProductForm = () => {
           <input
             required
             type="text"
-            id="name"
-            name="name"
+            id="productName"
+            name="productName"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
             placeholder="Product Name"
-            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            className="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
           />
         </div>
         <div className="space-y-1">
           <label htmlFor="price" className="font-medium">
-            Product Price *
+            Product Price (in indian rupees) *
           </label>
           <input
             required
             type="number"
             id="price"
             name="price"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
             placeholder="Product Price"
-            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            className="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
           />
         </div>
         <div className="space-y-1">
@@ -38,11 +130,10 @@ const ProductForm = () => {
             required
             id="category"
             name="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
             className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
           >
-            <option selected disabled>
-              Select Category
-            </option>
             <option value="men">Men</option>
             <option value="women">Women</option>
           </select>
@@ -55,11 +146,10 @@ const ProductForm = () => {
             required
             name="subcategory"
             id="subcategory"
+            value={subcategory}
+            onChange={(e) => setSubcategory(e.target.value)}
             className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
           >
-            <option selected disabled>
-              Select Sub-Category
-            </option>
             <option value="tshirt">T-Shirt</option>
             <option value="jeans">Jeans</option>
             <option value="shirt">Shirt</option>
@@ -69,48 +159,41 @@ const ProductForm = () => {
         </div>
         <div className="space-y-1">
           <label htmlFor="color" className="font-medium">
-            Color *
+            Colors *
           </label>
-          <select
+          <Select
             required
-            name="color"
-            id="color"
-            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-          >
-            <option selected disabled>
-              Select Color
-            </option>
-            <option value="white">White</option>
-            <option value="black">Black</option>
-            <option value="blue">Blue</option>
-            <option value="yellow">Yellow</option>
-            <option value="Red">Red</option>
-          </select>
+            name="colors"
+            id="colors"
+            mode="multiple"
+            size="large"
+            placeholder="Select Colors"
+            defaultValue={[]}
+            onChange={(e) => setColors(e)}
+            style={{
+              width: "100%",
+            }}
+            options={colorsOption}
+          />
         </div>
         <div className="space-y-1">
           <label htmlFor="size" className="font-medium">
             Size *
           </label>
-          <select
+          <Select
             required
             name="size"
             id="size"
-            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-          >
-            <option selected disabled>
-              Select Size
-            </option>
-            <option value="s">S</option>
-            <option value="m">M</option>
-            <option value="l">L</option>
-            <option value="xl">XL</option>
-            <option value="xxl">XXL</option>
-            <option value="28">28</option>
-            <option value="30">30</option>
-            <option value="32">32</option>
-            <option value="36">36</option>
-            <option value="38">38</option>
-          </select>
+            mode="multiple"
+            size="large"
+            placeholder="Select Size"
+            defaultValue={[]}
+            onChange={(e) => setSize(e)}
+            style={{
+              width: "100%",
+            }}
+            options={sizeOption}
+          />
         </div>
         <div className="space-y-1">
           <label htmlFor="price" className="font-medium">
@@ -140,8 +223,8 @@ const ProductForm = () => {
           <label htmlFor="name" className="font-medium">
             Product Images *
           </label>
-     
         </div>
+        <button type="submit">Save</button>
       </form>
     </div>
   );
