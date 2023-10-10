@@ -100,7 +100,8 @@ const Sidebar = () => {
                   <li>
                     <Link
                       className={`inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline ${
-                        pathname === "/products"
+                        pathname === "/products" ||
+                        pathname === "/products/addproduct"
                           ? "bg-indigo-600"
                           : "hover:bg-indigo-600"
                       }`}
