@@ -14,6 +14,7 @@
     "antd": "^5.10.0",
     "babel-plugin-import": "^1.13.8",
     "mongodb": "^6.1.0",
+    "mongoose": "^7.6.1",
     "next": "13.5.4",
     "next-auth": "^4.23.2",
     "react": "^18",

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Select from "antd/es/Select";
+import { useRouter } from "next/navigation";
 
 const colorsOption = [
   {
@@ -69,24 +70,42 @@ const sizeOption = [
 ];
 
 const ProductForm = () => {
+  const router = useRouter();
   const [productName, setProductName] = useState("");
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState("");
   const [category, setCategory] = useState("men");
   const [subcategory, setSubcategory] = useState("tshirt");
   const [colors, setColors] = useState([]);
   const [size, setSize] = useState([]);
+  const [featured, setFeatured] = useState(false);
+  const [archived, setArchived] = useState(false);
 
   async function createProduct(e) {
     e.preventDefault();
-    const data = {
-      productName,
-      price,
-      category,
-      subcategory,
-      colors,
-      size,
-    };
-    console.log(data);
+    try {
+      const response = await fetch(`/api/products`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productName,
+          price,
+          category,
+          subcategory,
+          colors,
+          size,
+          featured,
+          archived,
+        }),
+      });
+      if (response.status === 200) {
+        router.push("/products");
+      }
+      //  console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -202,6 +221,9 @@ const ProductForm = () => {
           <div className="flex items-center">
             <input
               type="checkbox"
+              name="featured"
+              id="featured"
+              onChange={(e) => setFeatured(e.target.checked)}
               className="form-checkbox h-5 w-5 text-gray-600"
             />
             <span className="ml-2 font-medium">Featured</span>
@@ -214,6 +236,9 @@ const ProductForm = () => {
           <div className="flex items-center">
             <input
               type="checkbox"
+              name="archived"
+              id="archived"
+              onChange={(e) => setArchived(e.target.checked)}
               className="form-checkbox h-5 w-5 text-gray-600"
             />
             <span className="ml-2 font-medium">Archived</span>
