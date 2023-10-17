@@ -1,7 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Select from "antd/es/Select";
 import { useRouter } from "next/navigation";
+import Spinner from "../Spinner";
+import sha1 from "sha1";
+import Editor from "react-markdown-editor-lite";
+import ReactMarkdown from "react-markdown";
+import "react-markdown-editor-lite/lib/index.css";
 
 const colorsOption = [
   {
@@ -70,6 +75,8 @@ const sizeOption = [
 ];
 
 const ProductForm = () => {
+  const mdEditor = useRef(null);
+  const [value, setValue] = useState("xxx");
   const router = useRouter();
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
@@ -79,7 +86,29 @@ const ProductForm = () => {
   const [size, setSize] = useState([]);
   const [featured, setFeatured] = useState(false);
   const [archived, setArchived] = useState(false);
+  const [images, setImages] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
 
+  async function uploadImages(ev) {
+    const files = ev.target?.files;
+    if (files?.length > 0) {
+      setIsUploading(true);
+      let data = new FormData();
+      for (const file of files) {
+        data.append("file", file);
+        data.append("upload_preset", "ecommerceclothes");
+      }
+      const res = await fetch(`/api/upload`, {
+        method: "POST",
+        body: data,
+      });
+      const imageResponse = await res.json();
+      setImages((oldImages) => {
+        return [...oldImages, ...imageResponse.links];
+      });
+      setIsUploading(false);
+    }
+  }
   async function createProduct(e) {
     e.preventDefault();
     try {
@@ -97,16 +126,50 @@ const ProductForm = () => {
           size,
           featured,
           archived,
+          images,
         }),
       });
       if (response.status === 200) {
         router.push("/products");
       }
-      //  console.log(response);
     } catch (error) {
       console.log(error);
     }
   }
+
+  async function Deletemages(link) {
+    const regex = /\/ecommerceclothes_folder\/([^/]+)\.webp$/;
+    const publicId = link.match(regex);
+    const url = "ecommerceclothes_folder/" + publicId[1];
+    const timestamp = new Date().getTime();
+    const string = `public_id=${url}&timestamp=${timestamp}${process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET}`;
+    const signature = sha1(string);
+
+    const formData = new FormData();
+    formData.append("public_id", url);
+    formData.append("signature", signature);
+    formData.append("api_key", process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY);
+    formData.append("timestamp", timestamp);
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/destroy`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    const del = await res.json();
+    if (del.result === "ok") {
+      const newImages = images.filter((v) => v !== link);
+      setImages(newImages);
+    }
+  }
+
+  const handleEditorChange = ({ html, text }) => {
+    const newValue = text.replace(/\d/g, "");
+    console.log(newValue);
+    setValue(newValue);
+  };
 
   return (
     <div className="py-16">
@@ -248,7 +311,77 @@ const ProductForm = () => {
           <label htmlFor="name" className="font-medium">
             Product Images *
           </label>
+          <div className="mb-2 flex flex-wrap gap-1">
+            {!!images?.length &&
+              images.map((link) => (
+                <div
+                  key={link}
+                  className="h-24 w-24 bg-white p-4 shadow-sm rounded-sm border border-gray-200 relative"
+                >
+                  <img src={link} alt="" className="rounded-lg" />
+                  <button
+                    className="top-0 absolute right-0"
+                    onClick={() => Deletemages(link)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            {isUploading && (
+              <div className="h-24 flex items-center">
+                <Spinner />
+              </div>
+            )}
+            <label className="w-24 h-24 cursor-pointer text-center flex flex-col items-center justify-center text-sm gap-1 text-primary rounded-sm bg-white shadow-sm border border-primary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+                />
+              </svg>
+              <div>Upload</div>
+              <input type="file" onChange={uploadImages} className="hidden" />
+            </label>
+          </div>
         </div>
+        <div className="space-y-1">
+          <label htmlFor="description" className="font-medium">
+            Product Description *
+          </label>
+          <div>
+            <Editor
+              ref={mdEditor}
+              value={value}
+              style={{
+                height: "500px",
+              }}
+              onChange={handleEditorChange}
+              renderHTML={(text) => <ReactMarkdown children={text} />}
+            />
+          </div>
+        </div>
+
         <button type="submit">Save</button>
       </form>
     </div>
