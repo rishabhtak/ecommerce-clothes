@@ -7,6 +7,10 @@ import sha1 from "sha1";
 import Editor from "react-markdown-editor-lite";
 import ReactMarkdown from "react-markdown";
 import "react-markdown-editor-lite/lib/index.css";
+import Link from "next/link";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
+import deleteImages from "@/app/utils/deleteImages";
 
 const colorsOption = [
   {
@@ -74,20 +78,43 @@ const sizeOption = [
   },
 ];
 
-const ProductForm = () => {
+const ProductForm = ({
+  _id,
+  productName: oldProductName,
+  price: oldPrice,
+  category: oldCategory,
+  subcategory: oldSubcategory,
+  colors: oldColors,
+  size: oldSize,
+  featured: oldFeatured,
+  archived: oldArchived,
+  images: oldImages,
+  desc: oldDesc,
+}) => {
   const mdEditor = useRef(null);
-  const [value, setValue] = useState("xxx");
   const router = useRouter();
-  const [productName, setProductName] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("men");
-  const [subcategory, setSubcategory] = useState("tshirt");
-  const [colors, setColors] = useState([]);
-  const [size, setSize] = useState([]);
-  const [featured, setFeatured] = useState(false);
-  const [archived, setArchived] = useState(false);
-  const [images, setImages] = useState([]);
+  const [productName, setProductName] = useState(oldProductName || "");
+  const [price, setPrice] = useState(oldPrice || 0);
+  const [category, setCategory] = useState(oldCategory || "men");
+  const [subcategory, setSubcategory] = useState(oldSubcategory || "tshirt");
+  const [colors, setColors] = useState(oldColors || []);
+  const [size, setSize] = useState(oldSize || []);
+  const [featured, setFeatured] = useState(oldFeatured || false);
+  const [archived, setArchived] = useState(oldArchived || false);
+  const [images, setImages] = useState(oldImages || []);
   const [isUploading, setIsUploading] = useState(false);
+  const [desc, setDesc] = useState(oldDesc || "");
+  const [slug, setSlug] = useState("");
+  const [validationErrors, setValidationErrors] = useState({});
+
+  const productSchema = Yup.object().shape({
+    productName: Yup.string().required("Product Name is required"),
+    price: Yup.number().required("Product Price is required"),
+    colors: Yup.array().min(1, "Select at least one color"),
+    size: Yup.array().min(1, "Select at least one size"),
+    images: Yup.array().min(1, "Select at least one image"),
+    desc: Yup.string().required("Product Description is required"),
+  });
 
   async function uploadImages(ev) {
     const files = ev.target?.files;
@@ -112,63 +139,98 @@ const ProductForm = () => {
   async function createProduct(e) {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/products`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      await productSchema.validate(
+        {
           productName,
           price,
-          category,
-          subcategory,
           colors,
           size,
-          featured,
-          archived,
           images,
-        }),
-      });
-      if (response.status === 200) {
-        router.push("/products");
+          desc,
+        },
+        { abortEarly: false }
+      );
+
+      const data = {
+        productName,
+        price,
+        category,
+        subcategory,
+        colors,
+        size,
+        featured,
+        archived,
+        images,
+        desc,
+        slug,
+      };
+      if (_id) {
+        console.log(_id);
+        const response = await fetch(`/api/products`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ data, _id }),
+        });
+
+        if (response.status === 500 || response.status === 404) {
+          toast.error("Something got error, Please try again later");
+        } else {
+          router.push("/products");
+          toast.success("Product updated successfully");
+        }
+      } else {
+        const response = await fetch(`/api/products`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        if (response.status === 500 || response.status === 404) {
+          toast.error("Something got error, Please try again later");
+        } else {
+          toast.success("Product created successfully");
+          router.push("/products");
+        }
       }
     } catch (error) {
-      console.log(error);
+      if (error instanceof Yup.ValidationError) {
+        const errors = {};
+        error.inner.forEach((validationError) => {
+          errors[validationError.path] = validationError.message;
+        });
+        setValidationErrors(errors);
+      } else {
+        toast.error("Something got error, Please try again later");
+      }
     }
   }
 
-  async function Deletemages(link) {
-    const regex = /\/ecommerceclothes_folder\/([^/]+)\.webp$/;
-    const publicId = link.match(regex);
-    const url = "ecommerceclothes_folder/" + publicId[1];
-    const timestamp = new Date().getTime();
-    const string = `public_id=${url}&timestamp=${timestamp}${process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET}`;
-    const signature = sha1(string);
-
-    const formData = new FormData();
-    formData.append("public_id", url);
-    formData.append("signature", signature);
-    formData.append("api_key", process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY);
-    formData.append("timestamp", timestamp);
-
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/destroy`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-    const del = await res.json();
-    if (del.result === "ok") {
+  async function deleteImg(link) {
+    let res = await deleteImages(link);
+    if (res.result === "ok") {
       const newImages = images.filter((v) => v !== link);
       setImages(newImages);
     }
   }
 
-  const handleEditorChange = ({ html, text }) => {
-    const newValue = text.replace(/\d/g, "");
-    console.log(newValue);
-    setValue(newValue);
+
+  const handleEditorChange = ({ text }) => {
+    setDesc(text);
+  };
+
+  // slug generator
+
+  const generateSlug = (productName) => {
+    // Remove spaces and convert to lowercase for the slug
+    const formattedTitle = productName.toLowerCase().replace(/\s/g, "-");
+
+    // Generate a random number between 1000 and 9999
+    const random = Math.floor(Math.random() * 9000) + 1000;
+
+    setSlug(`${formattedTitle}-${random}`);
   };
 
   return (
@@ -179,22 +241,26 @@ const ProductForm = () => {
             Product Name *
           </label>
           <input
-            required
             type="text"
             id="productName"
             name="productName"
             value={productName}
-            onChange={(e) => setProductName(e.target.value)}
+            onChange={(e) => {
+              setProductName(e.target.value);
+              generateSlug(e.target.value);
+            }}
             placeholder="Product Name"
             className="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
           />
+          {validationErrors.productName && (
+            <p className="text-red-600">{validationErrors.productName}</p>
+          )}
         </div>
         <div className="space-y-1">
           <label htmlFor="price" className="font-medium">
             Product Price (in indian rupees) *
           </label>
           <input
-            required
             type="number"
             id="price"
             name="price"
@@ -203,13 +269,15 @@ const ProductForm = () => {
             placeholder="Product Price"
             className="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
           />
+          {validationErrors.productName && (
+            <p className="text-red-600">{validationErrors.price}</p>
+          )}
         </div>
         <div className="space-y-1">
           <label htmlFor="category" className="font-medium">
             Category *
           </label>
           <select
-            required
             id="category"
             name="category"
             value={category}
@@ -225,7 +293,6 @@ const ProductForm = () => {
             Sub-Category *
           </label>
           <select
-            required
             name="subcategory"
             id="subcategory"
             value={subcategory}
@@ -244,38 +311,42 @@ const ProductForm = () => {
             Colors *
           </label>
           <Select
-            required
             name="colors"
             id="colors"
             mode="multiple"
             size="large"
             placeholder="Select Colors"
-            defaultValue={[]}
+            defaultValue={colors}
             onChange={(e) => setColors(e)}
             style={{
               width: "100%",
             }}
             options={colorsOption}
           />
+          {validationErrors.productName && (
+            <p className="text-red-600">{validationErrors.colors}</p>
+          )}
         </div>
         <div className="space-y-1">
           <label htmlFor="size" className="font-medium">
             Size *
           </label>
           <Select
-            required
             name="size"
             id="size"
             mode="multiple"
             size="large"
             placeholder="Select Size"
-            defaultValue={[]}
+            defaultValue={size}
             onChange={(e) => setSize(e)}
             style={{
               width: "100%",
             }}
             options={sizeOption}
           />
+          {validationErrors.productName && (
+            <p className="text-red-600">{validationErrors.size}</p>
+          )}
         </div>
         <div className="space-y-1">
           <label htmlFor="price" className="font-medium">
@@ -286,6 +357,7 @@ const ProductForm = () => {
               type="checkbox"
               name="featured"
               id="featured"
+              checked={featured}
               onChange={(e) => setFeatured(e.target.checked)}
               className="form-checkbox h-5 w-5 text-gray-600"
             />
@@ -301,6 +373,7 @@ const ProductForm = () => {
               type="checkbox"
               name="archived"
               id="archived"
+              checked={archived}
               onChange={(e) => setArchived(e.target.checked)}
               className="form-checkbox h-5 w-5 text-gray-600"
             />
@@ -316,12 +389,12 @@ const ProductForm = () => {
               images.map((link) => (
                 <div
                   key={link}
-                  className="h-24 w-24 bg-white p-4 shadow-sm rounded-sm border border-gray-200 relative"
+                  className="h-24 w-24 bg-white p-3 shadow-sm rounded-sm border border-gray-200 relative"
                 >
                   <img src={link} alt="" className="rounded-lg" />
-                  <button
-                    className="top-0 absolute right-0"
-                    onClick={() => Deletemages(link)}
+                  <div
+                    className="top-0 absolute right-0 cursor-pointer"
+                    onClick={() => deleteImg(link)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -329,7 +402,7 @@ const ProductForm = () => {
                       viewBox="0 0 24 24"
                       strokeWidth="1.5"
                       stroke="currentColor"
-                      className="w-6 h-6"
+                      className="w-4 h-4"
                     >
                       <path
                         strokeLinecap="round"
@@ -337,7 +410,7 @@ const ProductForm = () => {
                         d="M6 18L18 6M6 6l12 12"
                       />
                     </svg>
-                  </button>
+                  </div>
                 </div>
               ))}
             {isUploading && (
@@ -364,6 +437,9 @@ const ProductForm = () => {
               <input type="file" onChange={uploadImages} className="hidden" />
             </label>
           </div>
+          {validationErrors.productName && (
+            <p className="text-red-600">{validationErrors.images}</p>
+          )}
         </div>
         <div className="space-y-1">
           <label htmlFor="description" className="font-medium">
@@ -372,7 +448,7 @@ const ProductForm = () => {
           <div>
             <Editor
               ref={mdEditor}
-              value={value}
+              value={desc}
               style={{
                 height: "500px",
               }}
@@ -380,9 +456,24 @@ const ProductForm = () => {
               renderHTML={(text) => <ReactMarkdown children={text} />}
             />
           </div>
+          {validationErrors.productName && (
+            <p className="text-red-600">{validationErrors.desc}</p>
+          )}
         </div>
-
-        <button type="submit">Save</button>
+        <div className="flex gap-4 text-center justify-center">
+          <button
+            className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
+            type="submit"
+          >
+            Save
+          </button>
+          <Link
+            href="/products"
+            className="inline-block px-4 py-2 text-white duration-150 font-medium bg-red-600 rounded-lg hover:bg-red-500 active:bg-indigo-700 md:text-sm"
+          >
+            Cancel
+          </Link>
+        </div>
       </form>
     </div>
   );

@@ -30,7 +30,7 @@ const Sidebar = () => {
           />
         </svg>
       </button>
-      <div className={`${showMenu} md:block fixed w-full md:w-64`}>
+      <div className={`${showMenu} md:block fixed w-full md:w-64 z-10`}>
         <div className="flex flex-col h-screen">
           <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-indigo-700 border-r">
             <div className="flex flex-col items-center flex-shrink-0 px-4">

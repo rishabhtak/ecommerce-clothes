@@ -2,9 +2,77 @@
 import { useEffect, useState } from "react";
 import Table from "@/components/Table/Table";
 import Link from "next/link";
+import Image from "next/image";
+import { ToastContainer } from "react-toastify";
+import { createColumnHelper } from "@tanstack/react-table";
+import DialogBox from "../DialogBox";
 
 const Product = () => {
   const [products, setProducts] = useState([]);
+  const [showDialog, setShowDialog] = useState(false);
+  const [id, setId] = useState(null);
+
+  const handleDelete = (id) => {
+    setShowDialog(true);
+    setId(id);
+  };
+
+  const columnHelper = createColumnHelper();
+
+  const columns = [
+    columnHelper.accessor("productName", {
+      header: () => "Name",
+    }),
+    columnHelper.accessor("price", {
+      header: () => "Price",
+    }),
+    columnHelper.accessor("images", {
+      header: () => "Images",
+      cell: (info) => (
+        <div className="flex items-center">
+          {info?.getValue()?.map((image) => (
+            <Image
+              className="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full shrink-0"
+              src={image}
+              key={image}
+              width={50}
+              height={50}
+              alt="images"
+            />
+          ))}
+          {info?.getValue()?.length > 4 && (
+            <p className="flex items-center justify-center w-6 h-6 -mx-1 text-xs text-blue-600 bg-blue-100 border-2 border-white rounded-full">
+              +4
+            </p>
+          )}
+        </div>
+      ),
+    }),
+    columnHelper.accessor("category", {
+      header: () => "Category",
+    }),
+    columnHelper.accessor("actions", {
+      header: () => "Actions",
+      enableSorting: false,
+      cell: ({ row }) => (
+        <div className="flex items-center gap-x-6">
+          <Link
+            href={"/products/updateproduct/" + row.original._id}
+            className="text-blue-500"
+          >
+            Edit
+          </Link>
+          <button
+            className="text-gray-500"
+            onClick={() => handleDelete(row.original._id)}
+          >
+            Delete
+          </button>
+        </div>
+      ),
+    }),
+  ];
+
   async function getProducts() {
     try {
       const response = await fetch(`/api/products`, {
@@ -13,8 +81,8 @@ const Product = () => {
           "Content-Type": "application/json",
         },
       });
-      const product = await response.json();
-      setProducts(product);
+      const data = await response.json();
+      setProducts(data.products);
     } catch (error) {
       console.log(error);
     }
@@ -24,9 +92,15 @@ const Product = () => {
     getProducts();
   }, []);
 
-  console.log(products);
   return (
     <>
+      <DialogBox
+        showDialog={showDialog}
+        setShowDialog={setShowDialog}
+        getProducts={getProducts}
+        id={id}
+      />
+      <ToastContainer />
       <div className="items-start justify-between mt-2 md:flex">
         <div className="max-w-lg">
           <h2 className="text-gray-800 text-xl font-bold sm:text-2xl">
@@ -42,7 +116,7 @@ const Product = () => {
           </Link>
         </div>
       </div>
-      <Table />
+      <Table columns={columns} data={products} />
     </>
   );
 };

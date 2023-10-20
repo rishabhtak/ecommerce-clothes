@@ -1,11 +1,10 @@
-import mongoose, { model, Schema, models } from "mongoose";
+import { model, Schema, models } from "mongoose";
 
 const ProductSchema = new Schema(
   {
     productName: {
       type: String,
       required: true,
-      unique: true,
     },
     price: {
       type: Number,
@@ -35,7 +34,15 @@ const ProductSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    images: [{ type: String }],
+    desc: {
+      type: String,
+      required: true,
+    },
+    images: [{ type: String, required: true }],
+    slug: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
