@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
+import { mongooseConnect } from "@/lib/mongoose";
+import { isAdminRequest } from "../auth/[...nextauth]/route";
 
 export async function POST(req) {
   try {
+    await mongooseConnect();
+    await isAdminRequest();
     const formData = await req.formData();
     const img = formData.get("file");
     if (!img) {
@@ -18,8 +22,6 @@ export async function POST(req) {
     const links = [];
     const uploadedImageData = await uploadResponse.json();
     links.push(uploadedImageData.secure_url);
-    //  const imageUrl = uploadedImageData.secure_url;
-
     return NextResponse.json({
       links,
       message: "Success",
@@ -29,8 +31,6 @@ export async function POST(req) {
     return NextResponse.json({ message: "Error", status: 500 });
   }
 }
-
-
 
 export const config = {
   api: { bodyParser: false },

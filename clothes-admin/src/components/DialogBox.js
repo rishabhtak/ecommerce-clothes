@@ -2,22 +2,20 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import deleteImages from "@/app/utils/deleteImages";
 
 export default function DialogBox({
   showDialog,
   setShowDialog,
   id,
   getProducts,
+  images,
 }) {
-  const router = useRouter();
-
   function closeModal() {
     setShowDialog(false);
   }
 
   async function deleteProduct() {
-    console.log(id);
     try {
       const response = await fetch(`/api/products/?id=${id}`, {
         method: "DELETE",
@@ -26,6 +24,9 @@ export default function DialogBox({
         toast.error("Something got error, Please try again later");
         setShowDialog(false);
       } else {
+        images.forEach(async (filename) => {
+          await deleteImages(filename);
+        });
         toast.success("Product deleted successfully");
         setShowDialog(false);
         getProducts();

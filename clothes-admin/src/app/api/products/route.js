@@ -1,11 +1,13 @@
 import { Product } from "@/models/Product";
 import { mongooseConnect } from "@/lib/mongoose";
 import { NextResponse } from "next/server";
+import { isAdminRequest } from "../auth/[...nextauth]/route";
 
 export async function POST(req) {
   try {
     const body = await req.json();
     await mongooseConnect();
+    await isAdminRequest();
     await Product.create(body);
     return new NextResponse("Success", { status: 200 });
   } catch (error) {
@@ -21,12 +23,15 @@ export async function PUT(req) {
   try {
     const body = await req.json();
     const id = body._id;
+    await mongooseConnect();
+    await isAdminRequest();
     if (!id) {
       return new NextResponse("Product not found", { status: 404 });
     } else {
       const {
         productName,
         price,
+        qty,
         category,
         subcategory,
         colors,
@@ -40,6 +45,7 @@ export async function PUT(req) {
       const newProduct = {};
       newProduct.productName = productName;
       newProduct.price = price;
+      newProduct.qty = qty;
       newProduct.category = category;
       newProduct.subcategory = subcategory;
       newProduct.colors = colors;
@@ -66,6 +72,7 @@ export async function DELETE(req) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
     await mongooseConnect();
+    await isAdminRequest();
     if (!id) {
       return new NextResponse("Product not found", { status: 404 });
     } else {
@@ -85,6 +92,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
     await mongooseConnect();
+    await isAdminRequest();
     let products = [];
     if (id) {
       products = await Product.findOne({ _id: id });

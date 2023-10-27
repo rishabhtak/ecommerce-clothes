@@ -10,21 +10,14 @@ const data = [
   { id: 5, name: "Contact", url: "/" },
 ];
 
-const subMenuMenData = [
-  { id: 1, name: "Shirts", doc_count: 11, url: "/men-clothing/shirts" },
-  { id: 2, name: "T-Shirt", doc_count: 8, url: "/men-clothing/tshirt" },
-  { id: 3, name: "Jeans", doc_count: 64, url: "/men-clothing/jeans" },
-  { id: 4, name: "Trousers", doc_count: 107, url: "/men-clothing/trousers" },
-];
-
-const subMenuWomenData = [
-  { id: 1, name: "Tops", doc_count: 11, url: "/women-clothing/tops" },
-  { id: 2, name: "T-Shirt", doc_count: 8, url: "/women-clothing/tshirt" },
-  { id: 3, name: "Jeans", doc_count: 64, url: "/women-clothing/jeans" },
-  { id: 4, name: "Trousers", doc_count: 107, url: "/women-clothing/trousers" },
-];
-
-const Menu = ({ showMenCat, showWomenCat, setShowMenCat, setShowWomenCat }) => {
+const Menu = ({
+  showMenCat,
+  showWomenCat,
+  setShowMenCat,
+  setShowWomenCat,
+  subMenuMenData,
+  subMenuWomenData,
+}) => {
   return (
     <ul className="hidden md:flex items-center gap-8 font-medium text-black">
       {data.map((item) => {
@@ -50,9 +43,6 @@ const Menu = ({ showMenCat, showWomenCat, setShowMenCat, setShowWomenCat }) => {
                           >
                             <li className="h-12 flex justify-between items-center px-3 hover:bg-black/[0.03] border-b">
                               {submenu.name}
-                              <span className="opacity-50 text-sm">
-                                {submenu.doc_count}
-                              </span>
                             </li>
                           </Link>
                         );
@@ -79,9 +69,6 @@ const Menu = ({ showMenCat, showWomenCat, setShowMenCat, setShowWomenCat }) => {
                           >
                             <li className="h-12 flex justify-between items-center px-3 hover:bg-black/[0.03] border-b">
                               {submenu.name}
-                              <span className="opacity-50 text-sm">
-                                {submenu.doc_count}
-                              </span>
                             </li>
                           </Link>
                         );

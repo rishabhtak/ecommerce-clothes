@@ -7,7 +7,6 @@ import {
   FunnelIcon,
   MinusIcon,
   PlusIcon,
-  Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import ProductCard from "./ProductCard";
 
@@ -18,23 +17,16 @@ const sortOptions = [
 
 const filters = [
   {
-    id: "gender",
-    name: "Gender",
-    options: [
-      { value: "men", label: "Men", checked: false },
-      { value: "women", label: "Women", checked: false },
-    ],
-  },
-  {
     id: "color",
     name: "Color",
     options: [
       { value: "white", label: "White", checked: false },
-      { value: "beige", label: "Beige", checked: false },
-      { value: "blue", label: "Blue", checked: true },
+      { value: "black", label: "Black", checked: false },
+      { value: "blue", label: "Blue", checked: false },
       { value: "brown", label: "Brown", checked: false },
       { value: "green", label: "Green", checked: false },
-      { value: "purple", label: "Purple", checked: false },
+      { value: "red", label: "Red", checked: false },
+      { value: "yellow", label: "Yellow", checked: false },
     ],
   },
   {
@@ -53,7 +45,7 @@ const filters = [
     id: "price",
     name: "Price",
     options: [
-      { value: "159-399", label: "₹159 To ₹399", checked: false },
+      { value: "1-399", label: "₹1 To ₹399", checked: false },
       { value: "399-999", label: "₹399 To ₹999", checked: false },
       { value: "999-1999", label: "₹999 To ₹1999", checked: false },
       { value: "1999-2999", label: "₹1999 To ₹2999", checked: false },
@@ -85,7 +77,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductFilter() {
+export default function ProductFilter({ productShirts }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   return (
@@ -331,14 +323,12 @@ export default function ProductFilter() {
 
             {/* Product grid */}
             <div className="lg:col-span-4">
-              <ProductCard />
+              <ProductCard productShirts={productShirts} />
             </div>
             {/* Pagination */}
-            
           </div>
         </section>
       </main>
-      
     </div>
   );
 }

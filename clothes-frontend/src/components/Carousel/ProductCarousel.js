@@ -3,6 +3,7 @@ import Carousel from "react-multi-carousel";
 import Image from "next/image";
 import Wrapper from "../Wrapper/Index";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
+import Link from "next/link";
 
 const ButtonGroup = ({ next, previous }) => {
   return (
@@ -53,44 +54,46 @@ const ProductCarousel = ({ data }) => {
         renderButtonGroupOutside={true}
         customButtonGroup={<ButtonGroup />}
       >
-        {data.map((element, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-center w-full max-w-[280px] mx-auto py-5"
-          >
-            <Image
-              className="w-full h-64 bg-gray-300 bg-center bg-cover rounded-lg shadow-md cursor-pointer transition ease-in-out delay-150 hover:-translate-y-3"
-              src={element.img}
-              alt={element.title}
-              width={624}
-              height={832}
-            />
-            <div className="w-56 mt-2 overflow-hidden md:w-64 select-none">
-              <h3 className="py-2 font-semibold tracking-wide text-center text-gray-800 uppercase ">
-                {element.title}
-              </h3>
-              <div className="flex items-center justify-between px-3 py-2 border-t border-gray-800">
-                <span className="font-semibold text-gray-800">
-                  {element?.discountPrice ? (
-                    <>
-                      <span className="mr-2 line-through">
-                        ₹{element.price}
-                      </span>
-                      <span>₹{element.discountPrice}</span>
-                    </>
-                  ) : (
-                    <>₹{element.price}</>
-                  )}
-                </span>
-                <span className="font-semibold text-amber-500">
-                  {element?.discoutPercentage
-                    ? `${element.discoutPercentage}% Off`
-                    : ""}
-                </span>
+        {data?.map((element) => {
+          element._id = element._id.toString();
+          return (
+            <Link key={element._id} href={element.slug}>
+              <div className="flex flex-col items-center w-full max-w-[280px] mx-auto py-5">
+                <Image
+                  className="w-full h-64 bg-gray-300 bg-center bg-cover rounded-lg shadow-md pointer-events-none transition ease-in-out delay-150 hover:-translate-y-3"
+                  src={element.images[0]}
+                  alt={element.productName}
+                  width={624}
+                  height={832}
+                />
+                <div className="w-56 mt-2 overflow-hidden md:w-64 select-none">
+                  <h3 className="py-2 font-semibold tracking-wide text-center text-gray-800 capitalize line-clamp-1">
+                    {element.productName}
+                  </h3>
+                  <div className="flex items-center justify-between px-3 py-2 border-t border-gray-800">
+                    <span className="font-semibold text-gray-800">
+                      {element?.discountPrice ? (
+                        <>
+                          <span className="mr-2 line-through">
+                            ₹{element.price}
+                          </span>
+                          <span>₹{element.discountPrice}</span>
+                        </>
+                      ) : (
+                        <>₹{element.price}</>
+                      )}
+                    </span>
+                    <span className="font-semibold text-amber-500">
+                      {element?.discoutPercentage
+                        ? `${element.discoutPercentage}% Off`
+                        : ""}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            </Link>
+          );
+        })}
       </Carousel>
     </Wrapper>
   );

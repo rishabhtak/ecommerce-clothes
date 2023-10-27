@@ -28,13 +28,15 @@ const Table = ({ columns, data }) => {
     onGlobalFilterChange: setFiltering,
   });
 
-  let totalPages = table.getPageCount();
-  let currentPage = table.getState().pagination.pageIndex + 1;
   let pageNumbers = [];
-  for (let i = currentPage - 3; i <= 7; i++) {
-    if (i < 1) continue;
-    if (i > totalPages) break;
-    pageNumbers.push(i);
+  if (data?.length > 0) {
+    let totalPages = table.getPageCount();
+    let currentPage = table.getState().pagination.pageIndex + 1;
+    for (let i = currentPage - 3; i <= 7; i++) {
+      if (i < 1) continue;
+      if (i > totalPages) break;
+      pageNumbers.push(i);
+    }
   }
 
   return (
@@ -130,21 +132,27 @@ const Table = ({ columns, data }) => {
                   ))}
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {table.getRowModel().rows.map((row) => (
-                    <tr key={row.id}>
-                      {row.getVisibleCells().map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="px-4 py-4 text-sm font-medium whitespace-nowrap capitalize"
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
+                  {data?.length ? (
+                    table.getRowModel().rows?.map((row) => (
+                      <tr key={row.id}>
+                        {row.getVisibleCells()?.map((cell) => (
+                          <td
+                            key={cell.id}
+                            className="px-4 py-4 text-sm font-medium whitespace-nowrap capitalize"
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td>No Data Found</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -175,7 +183,7 @@ const Table = ({ columns, data }) => {
           First
         </button>
         <div className="items-center flex gap-x-3">
-          {pageNumbers.map((pagenumber) => (
+          {pageNumbers?.map((pagenumber) => (
             <button
               onClick={() => {
                 table.setPageIndex(pagenumber - 1);
@@ -189,7 +197,7 @@ const Table = ({ columns, data }) => {
         </div>
         <button
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
+          disabled={data?.length ? !table.getCanNextPage() : true}
           className="flex items-center px-5 py-2 text-sm transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100"
         >
           Last

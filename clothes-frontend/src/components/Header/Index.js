@@ -19,6 +19,20 @@ const Header = () => {
   const [show, setShow] = useState("translate-y-0");
   const [lastScrollY, setLastScrollY] = useState(0);
 
+  const subMenuMenData = [
+    { id: 1, name: "Shirt", url: "/men/shirt" },
+    { id: 2, name: "T-Shirt", url: "/men/tshirt" },
+    { id: 3, name: "Jeans", url: "/men/jeans" },
+    { id: 4, name: "Trouser", url: "/men/trouser" },
+  ];
+
+  const subMenuWomenData = [
+    { id: 1, name: "Tops", url: "/women/tops" },
+    { id: 2, name: "Shirt", url: "/women/shirt" },
+    { id: 3, name: "Jeans", url: "/women/jeans" },
+    { id: 4, name: "Trouser", url: "/women/trouser" },
+  ];
+
   const controlNavbar = () => {
     if (window.scrollY > 200) {
       if (window.scrollY > lastScrollY && !mobileMenu) {
@@ -59,6 +73,8 @@ const Header = () => {
           setShowMenCat={setShowMenCat}
           showWomenCat={showWomenCat}
           setShowWomenCat={setShowWomenCat}
+          subMenuMenData={subMenuMenData}
+          subMenuWomenData={subMenuWomenData}
         />
 
         {mobileMenu && (
@@ -68,6 +84,8 @@ const Header = () => {
             showWomenCat={showWomenCat}
             setShowWomenCat={setShowWomenCat}
             setMobileMenu={setMobileMenu}
+            subMenuMenData={subMenuMenData}
+            subMenuWomenData={subMenuWomenData}
           />
         )}
 

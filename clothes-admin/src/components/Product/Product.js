@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Table from "@/components/Table/Table";
 import Link from "next/link";
 import Image from "next/image";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { createColumnHelper } from "@tanstack/react-table";
 import DialogBox from "../DialogBox";
 
@@ -11,10 +11,12 @@ const Product = () => {
   const [products, setProducts] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
   const [id, setId] = useState(null);
+  const [images, setImages] = useState(null);
 
-  const handleDelete = (id) => {
+  const handleDelete = (id, data) => {
     setShowDialog(true);
     setId(id);
+    setImages(data.images);
   };
 
   const columnHelper = createColumnHelper();
@@ -64,7 +66,7 @@ const Product = () => {
           </Link>
           <button
             className="text-gray-500"
-            onClick={() => handleDelete(row.original._id)}
+            onClick={() => handleDelete(row.original._id, row.original)}
           >
             Delete
           </button>
@@ -84,7 +86,7 @@ const Product = () => {
       const data = await response.json();
       setProducts(data.products);
     } catch (error) {
-      console.log(error);
+      toast.error("Error fetching products");
     }
   }
 
@@ -99,6 +101,7 @@ const Product = () => {
         setShowDialog={setShowDialog}
         getProducts={getProducts}
         id={id}
+        images={images}
       />
       <ToastContainer />
       <div className="items-start justify-between mt-2 md:flex">

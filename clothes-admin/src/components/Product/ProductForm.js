@@ -3,7 +3,6 @@ import { useState, useRef } from "react";
 import Select from "antd/es/Select";
 import { useRouter } from "next/navigation";
 import Spinner from "../Spinner";
-import sha1 from "sha1";
 import Editor from "react-markdown-editor-lite";
 import ReactMarkdown from "react-markdown";
 import "react-markdown-editor-lite/lib/index.css";
@@ -32,6 +31,14 @@ const colorsOption = [
   {
     value: "#FF0000",
     label: "Red",
+  },
+  {
+    value: "#008000",
+    label: "Green",
+  },
+  {
+    value: "#964B00",
+    label: "Brown",
   },
 ];
 
@@ -82,6 +89,7 @@ const ProductForm = ({
   _id,
   productName: oldProductName,
   price: oldPrice,
+  qty: oldQty,
   category: oldCategory,
   subcategory: oldSubcategory,
   colors: oldColors,
@@ -90,11 +98,13 @@ const ProductForm = ({
   archived: oldArchived,
   images: oldImages,
   desc: oldDesc,
+  slug: oldSlug,
 }) => {
   const mdEditor = useRef(null);
   const router = useRouter();
   const [productName, setProductName] = useState(oldProductName || "");
-  const [price, setPrice] = useState(oldPrice || 0);
+  const [price, setPrice] = useState(oldPrice || "");
+  const [qty, setQty] = useState(oldQty || "");
   const [category, setCategory] = useState(oldCategory || "men");
   const [subcategory, setSubcategory] = useState(oldSubcategory || "tshirt");
   const [colors, setColors] = useState(oldColors || []);
@@ -104,12 +114,21 @@ const ProductForm = ({
   const [images, setImages] = useState(oldImages || []);
   const [isUploading, setIsUploading] = useState(false);
   const [desc, setDesc] = useState(oldDesc || "");
-  const [slug, setSlug] = useState("");
+  const [slug, setSlug] = useState(oldSlug || "");
   const [validationErrors, setValidationErrors] = useState({});
 
   const productSchema = Yup.object().shape({
     productName: Yup.string().required("Product Name is required"),
-    price: Yup.number().required("Product Price is required"),
+    price: Yup.number()
+      .typeError("Please enter correct value")
+      .positive("Please enter correct value")
+      .integer("Please enter correct value")
+      .required("Product Price is required"),
+    qty: Yup.number()
+      .typeError("Please enter correct value")
+      .positive("Please enter correct value")
+      .integer("Please enter correct value")
+      .required("Product Quantity is required"),
     colors: Yup.array().min(1, "Select at least one color"),
     size: Yup.array().min(1, "Select at least one size"),
     images: Yup.array().min(1, "Select at least one image"),
@@ -130,9 +149,11 @@ const ProductForm = ({
         body: data,
       });
       const imageResponse = await res.json();
-      setImages((oldImages) => {
-        return [...oldImages, ...imageResponse.links];
-      });
+      if (imageResponse.status === 200) {
+        setImages((oldImages) => {
+          return [...oldImages, ...imageResponse.links];
+        });
+      }
       setIsUploading(false);
     }
   }
@@ -143,6 +164,7 @@ const ProductForm = ({
         {
           productName,
           price,
+          qty,
           colors,
           size,
           images,
@@ -154,6 +176,7 @@ const ProductForm = ({
       const data = {
         productName,
         price,
+        qty,
         category,
         subcategory,
         colors,
@@ -216,7 +239,6 @@ const ProductForm = ({
     }
   }
 
-
   const handleEditorChange = ({ text }) => {
     setDesc(text);
   };
@@ -269,8 +291,25 @@ const ProductForm = ({
             placeholder="Product Price"
             className="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
           />
-          {validationErrors.productName && (
+          {validationErrors.price && (
             <p className="text-red-600">{validationErrors.price}</p>
+          )}
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="price" className="font-medium">
+            Product Quantity *
+          </label>
+          <input
+            type="number"
+            id="qty"
+            name="qty"
+            value={qty}
+            onChange={(e) => setQty(e.target.value)}
+            placeholder="Product Quantity"
+            className="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+          />
+          {validationErrors.qty && (
+            <p className="text-red-600">{validationErrors.qty}</p>
           )}
         </div>
         <div className="space-y-1">
@@ -323,7 +362,7 @@ const ProductForm = ({
             }}
             options={colorsOption}
           />
-          {validationErrors.productName && (
+          {validationErrors.colors && (
             <p className="text-red-600">{validationErrors.colors}</p>
           )}
         </div>
@@ -344,7 +383,7 @@ const ProductForm = ({
             }}
             options={sizeOption}
           />
-          {validationErrors.productName && (
+          {validationErrors.size && (
             <p className="text-red-600">{validationErrors.size}</p>
           )}
         </div>
@@ -437,7 +476,7 @@ const ProductForm = ({
               <input type="file" onChange={uploadImages} className="hidden" />
             </label>
           </div>
-          {validationErrors.productName && (
+          {validationErrors.images && (
             <p className="text-red-600">{validationErrors.images}</p>
           )}
         </div>
@@ -456,7 +495,7 @@ const ProductForm = ({
               renderHTML={(text) => <ReactMarkdown children={text} />}
             />
           </div>
-          {validationErrors.productName && (
+          {validationErrors.desc && (
             <p className="text-red-600">{validationErrors.desc}</p>
           )}
         </div>
