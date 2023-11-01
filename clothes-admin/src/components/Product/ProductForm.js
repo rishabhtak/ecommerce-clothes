@@ -13,31 +13,31 @@ import deleteImages from "@/app/utils/deleteImages";
 
 const colorsOption = [
   {
-    value: "#FFFFFF",
+    value: "white",
     label: "White",
   },
   {
-    value: "#000000",
+    value: "black",
     label: "Black",
   },
   {
-    value: "#00FFFF",
+    value: "blue",
     label: "Blue",
   },
   {
-    value: "#EADDCA",
+    value: "yellow",
     label: "Yellow",
   },
   {
-    value: "#FF0000",
+    value: "red",
     label: "Red",
   },
   {
-    value: "#008000",
+    value: "green",
     label: "Green",
   },
   {
-    value: "#964B00",
+    value: "brown",
     label: "Brown",
   },
 ];

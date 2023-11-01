@@ -8,16 +8,24 @@ const responsive = {
   tablet: { breakpoint: { max: 1024, min: 464 }, items: 1 },
 };
 
-const ProductDetailCarousel = ({ images }) => {
+const ProductDetailCarousel = ({ images, productName }) => {
+  // Convert image URLs into an array of objects
+  const imageObjects = images?.map((imageUrl) => {
+    return {
+      src: imageUrl,
+      alt: productName,
+    };
+  });
+
   const CustomDot = ({ index, onClick, active }) => {
     return (
       <li className={active ? "active" : "inactive"} onClick={() => onClick()}>
         <Image
-          src={images[index].src}
-          alt={images[index].alt}
+          src={imageObjects[index].src}
+          alt={imageObjects[index].alt}
           width={50}
           height={60}
-          className="h-full w-full pl-2"
+          className="h-full w-full pl-2 cursor-pointer"
         />
       </li>
     );
@@ -32,9 +40,8 @@ const ProductDetailCarousel = ({ images }) => {
       slidesToSlide={1}
       customDot={<CustomDot />}
       dotListClass="dotClass"
-
     >
-      {images.map((image, index) => (
+      {imageObjects?.map((image, index) => (
         <Image
           key={index}
           src={image.src}

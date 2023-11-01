@@ -1,12 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function ProductCard({ productShirts }) {
-
+export default function ProductCard({ products  }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-      {productShirts?.map((element) => (
-        <Link key={element._id} href={element.slug}>
+      {products?.map((element) => (
+        <Link
+          key={element._id}
+          href={`/${element.category}/${element.subcategory}/${element.slug}`}
+        >
           <div className="flex flex-col items-center w-full max-w-[280px] mx-auto py-5">
             <Image
               className="w-full h-64 bg-gray-300 bg-center bg-cover rounded-lg shadow-md cursor-pointer transition ease-in-out delay-150 hover:-translate-y-3"

@@ -1,7 +1,9 @@
 "use client";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useMemo, useEffect } from "react";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   ChevronDownIcon,
   FunnelIcon,
@@ -9,16 +11,16 @@ import {
   PlusIcon,
 } from "@heroicons/react/20/solid";
 import ProductCard from "./ProductCard";
-
+import Pagination from "../Pagination";
 const sortOptions = [
-  { name: "Price: Low to High", href: "#", current: false },
-  { name: "Price: High to Low", href: "#", current: false },
+  { name: "Price: Low to High", price: "asc", current: false },
+  { name: "Price: High to Low", price: "desc", current: false },
 ];
 
 const filters = [
   {
-    id: "color",
-    name: "Color",
+    id: "colors",
+    name: "Colors",
     options: [
       { value: "white", label: "White", checked: false },
       { value: "black", label: "Black", checked: false },
@@ -33,12 +35,16 @@ const filters = [
     id: "size",
     name: "Size",
     options: [
-      { value: "2l", label: "2L", checked: false },
-      { value: "6l", label: "6L", checked: false },
-      { value: "12l", label: "12L", checked: false },
-      { value: "18l", label: "18L", checked: false },
-      { value: "20l", label: "20L", checked: false },
-      { value: "40l", label: "40L", checked: true },
+      { value: "s", label: "S", checked: false },
+      { value: "m", label: "M", checked: false },
+      { value: "l", label: "L", checked: false },
+      { value: "xl", label: "XL", checked: false },
+      { value: "xxl", label: "XXL", checked: false },
+      { value: "28", label: "28", checked: false },
+      { value: "30", label: "30", checked: false },
+      { value: "32", label: "32", checked: false },
+      { value: "34", label: "34", checked: false },
+      { value: "36", label: "36", checked: false },
     ],
   },
   {
@@ -52,7 +58,7 @@ const filters = [
       { value: "3999-4999", label: "₹2999 To ₹4999", checked: false },
     ],
   },
-  {
+  /*  {
     id: "discount",
     name: "Discount Price",
     options: [
@@ -70,15 +76,78 @@ const filters = [
       { value: "in_stock", label: "In Stock", checked: false },
       { value: "out_of_stock", label: "Out Of Stock", checked: false },
     ],
-  },
+  }, */
 ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductFilter({ productShirts }) {
+// todo: testing local storage
+
+export default function ProductFilter({ data }) {
+  const { products, totalProducts } = data;
+  // console.log(data);
+
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  const params = new URLSearchParams(searchParams);
+
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [filter, setFilter] = useState({});
+
+  const getCheckboxState = useMemo(() => {
+    return (sectionId, optionValue) => {
+      return filter[sectionId] && filter[sectionId].includes(optionValue);
+    };
+  }, [filter]);
+
+  const handleFilterChange = (sectionId, optionValue, isChecked) => {
+    const newFilter = { ...filter };
+
+    if (isChecked) {
+      newFilter[sectionId]
+        ? newFilter[sectionId].push(optionValue)
+        : (newFilter[sectionId] = [optionValue]);
+    } else {
+      if (newFilter[sectionId]) {
+        // If the sectionId exists and the optionValue is in the array, remove it
+        newFilter[sectionId] = newFilter[sectionId].filter(
+          (v) => v !== optionValue
+        );
+
+        // If the array is empty after removing the optionValue, delete the sectionId
+        if (newFilter[sectionId].length === 0) {
+          delete newFilter[sectionId];
+        }
+      }
+    }
+    setFilter(newFilter);
+  };
+
+  useEffect(() => {
+    let page = params.get("page") ? Number(params.get("page")) : 1;
+    if (page !== 1) {
+      params.set("page", 1);
+    }
+
+    const sortingParam = params.get("sort");
+    if (sortingParam) {
+      params.set("sort", sortingParam);
+    }
+    // Handle filter parameters
+    filters.forEach((section) => {
+      const filterValues = filter[section.id];
+      if (filterValues && filterValues.length > 0) {
+        params.set(section.id, filterValues.join(","));
+      } else {
+        params.delete(section.id);
+      }
+    });
+    replace(`${pathname}?${params}`);
+  }, [filter]);
 
   return (
     <div>
@@ -166,7 +235,20 @@ export default function ProductFilter({ productShirts }) {
                                     name={`${section.id}[]`}
                                     defaultValue={option.value}
                                     type="checkbox"
-                                    defaultChecked={option.checked}
+                                    checked={
+                                      getCheckboxState(
+                                        section.id,
+                                        option.value
+                                      ) || false
+                                    }
+                                    onChange={(e) => {
+                                      const isChecked = e.target.checked;
+                                      handleFilterChange(
+                                        section.id,
+                                        option.value,
+                                        isChecked
+                                      );
+                                    }}
                                     className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                   />
                                   <label
@@ -222,18 +304,25 @@ export default function ProductFilter({ productShirts }) {
                     {sortOptions.map((option) => (
                       <Menu.Item key={option.name}>
                         {({ active }) => (
-                          <a
-                            href={option.href}
+                          <Link
+                            href={{
+                              pathname: pathname,
+                              query: {
+                                ...Object.fromEntries(params),
+                                sort: option.price,
+                                page: 1,
+                              },
+                            }}
                             className={classNames(
                               option.current
-                                ? "font-medium text-gray-900"
+                                ? "font-medium text-blue-900"
                                 : "text-gray-500",
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm"
                             )}
                           >
                             {option.name}
-                          </a>
+                          </Link>
                         )}
                       </Menu.Item>
                     ))}
@@ -302,7 +391,18 @@ export default function ProductFilter({ productShirts }) {
                                 name={`${section.id}[]`}
                                 defaultValue={option.value}
                                 type="checkbox"
-                                defaultChecked={option.checked}
+                                checked={
+                                  getCheckboxState(section.id, option.value) ||
+                                  false
+                                }
+                                onChange={(e) => {
+                                  const isChecked = e.target.checked;
+                                  handleFilterChange(
+                                    section.id,
+                                    option.value,
+                                    isChecked
+                                  );
+                                }}
                                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                               />
                               <label
@@ -320,12 +420,20 @@ export default function ProductFilter({ productShirts }) {
                 </Disclosure>
               ))}
             </form>
-
             {/* Product grid */}
-            <div className="lg:col-span-4">
-              <ProductCard productShirts={productShirts} />
-            </div>
-            {/* Pagination */}
+            {totalProducts ? (
+              <div className="lg:col-span-4">
+                <ProductCard products={products} />
+                <Pagination
+                  totalProducts={totalProducts}
+                  currentPage={params.get("page")}
+                  pathname={pathname}
+                  params={params}
+                />
+              </div>
+            ) : (
+              <div>No Products Available</div>
+            )}
           </div>
         </section>
       </main>

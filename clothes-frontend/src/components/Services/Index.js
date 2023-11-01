@@ -37,7 +37,7 @@ const Services = () => {
                 />
               </div>
             </div>
-            <p className="text-xl font-semibold mt-2">Fash shipping</p>
+            <p className="text-xl font-semibold mt-2">Fast shipping</p>
           </div>
           <div className="flex flex-col group mb-5">
             <div className="w-full flex justify-center">

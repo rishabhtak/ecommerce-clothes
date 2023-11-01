@@ -4,6 +4,7 @@ import Image from "next/image";
 import Wrapper from "../Wrapper/Index";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import Link from "next/link";
+import ProductCard from "../Product/ProductCard";
 
 const ButtonGroup = ({ next, previous }) => {
   return (
@@ -57,7 +58,10 @@ const ProductCarousel = ({ data }) => {
         {data?.map((element) => {
           element._id = element._id.toString();
           return (
-            <Link key={element._id} href={element.slug}>
+            <Link
+              key={element._id}
+              href={`/${element.category}/${element.subcategory}/${element.slug}`}
+            >
               <div className="flex flex-col items-center w-full max-w-[280px] mx-auto py-5">
                 <Image
                   className="w-full h-64 bg-gray-300 bg-center bg-cover rounded-lg shadow-md pointer-events-none transition ease-in-out delay-150 hover:-translate-y-3"
