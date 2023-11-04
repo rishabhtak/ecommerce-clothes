@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Wrapper from "../Wrapper/Index";
-
+import Logout from "@/app/Logout";
 import Link from "next/link";
 import Menu from "./Menu";
 import MenuMobile from "./MenuMobile";
@@ -12,7 +12,8 @@ import { BsCart } from "react-icons/bs";
 import { BiMenuAltRight } from "react-icons/bi";
 import { VscChromeClose } from "react-icons/vsc";
 
-const Header = () => {
+const Header = ({ session }) => {
+  console.log("session", session);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [showMenCat, setShowMenCat] = useState(false);
   const [showWomenCat, setShowWomenCat] = useState(false);
@@ -91,12 +92,15 @@ const Header = () => {
 
         <div className="flex items-center gap-2 text-black">
           {/* Icon start */}
-          <div className="w-8 md:w-12 h-8 md:h-12 rounded-full flex justify-center items-center hover:bg-black/[0.05] cursor-pointer relative">
-            <IoMdHeartEmpty className="text-[19px] md:text-[24px]" />
-            <div className="h-[14px] md:h-[18px] min-w-[14px] md:min-w-[18px] rounded-full bg-red-600 absolute top-1 left-5 md:left-7 text-white text-[10px] md:text-[12px] flex justify-center items-center px-[2px] md:px-[5px]">
-              51
-            </div>
-          </div>
+          {!!session && <Logout />}
+          {!session && (
+            <Link
+              href="/login"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Login
+            </Link>
+          )}
           {/* Icon end */}
 
           {/* Icon start */}

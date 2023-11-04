@@ -1,5 +1,5 @@
 import ProductDetail from "@/components/Product/ProductDetail";
-import { getProduct } from "@/api/products";
+import { getProduct } from "@/lib/products";
 
 const page = async ({ params }) => {
   const data = await getProduct({ slug: params.product });

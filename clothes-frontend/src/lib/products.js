@@ -11,9 +11,6 @@ export const getAllProducts = async ({ combinedQuery, sort, page }) => {
     .skip(limit * pageNumber) // Adjusting the pagination skip based on page number
     .limit(limit);
   const totalProducts = await Product.find(combinedQuery).count();
-  /* if (res.ok) {
-    return "Product not found";
-  }*/
   return JSON.parse(JSON.stringify({ products, totalProducts }));
 };
 

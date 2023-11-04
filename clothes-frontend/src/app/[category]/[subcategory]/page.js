@@ -1,5 +1,5 @@
 import ProductFilter from "@/components/Product/ProductFilter";
-import { getAllProducts } from "@/api/products";
+import { getAllProducts } from "@/lib/products";
 
 const page = async ({ params, searchParams }) => {
   let colors = searchParams.colors

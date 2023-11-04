@@ -3,6 +3,7 @@ import Footer from "@/components/Footer/Index";
 import "./globals.css";
 import "react-multi-carousel/lib/styles.css";
 import { Oswald, Inter } from "next/font/google";
+import { getServerSession } from "next-auth";
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -21,11 +22,15 @@ export const metadata = {
   description: "E-Commerce Clothes shop",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const session = await getServerSession();
+
+  console.log("session: " + session);
+
   return (
     <html lang="en" className={`${oswald.variable}`}>
-      <body className={inter.className}>
-        <Header />
+      <body className={`${inter.className} antialiased`}>
+        <Header session={session} />
         {children}
         <Footer />
       </body>
