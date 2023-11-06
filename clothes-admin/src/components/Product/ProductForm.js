@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
-import Select from "antd/es/Select";
+import { Select } from 'antd';
 import { useRouter } from "next/navigation";
 import Spinner from "../Spinner";
 import Editor from "react-markdown-editor-lite";
