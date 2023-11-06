@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
 import { mongooseConnect } from "@/lib/mongoose";
-import { isAdminRequest } from "../auth/[...nextauth]/route";
 
 export async function POST(req) {
   try {
     await mongooseConnect();
-    await isAdminRequest();
     const formData = await req.formData();
     const img = formData.get("file");
     if (!img) {
