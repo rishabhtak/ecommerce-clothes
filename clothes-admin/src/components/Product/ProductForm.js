@@ -10,6 +10,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import deleteImages from "@/app/utils/deleteImages";
+import Image from "next/image";
 
 const colorsOption = [
   {
@@ -430,7 +431,13 @@ const ProductForm = ({
                   key={link}
                   className="h-24 w-24 bg-white p-3 shadow-sm rounded-sm border border-gray-200 relative"
                 >
-                  <img src={link} alt="" className="rounded-lg" />
+                  <Image
+                    src={link}
+                    alt="image"
+                    height={100}
+                    width={100}
+                    className="rounded-lg"
+                  />
                   <div
                     className="top-0 absolute right-0 cursor-pointer"
                     onClick={() => deleteImg(link)}
@@ -492,7 +499,7 @@ const ProductForm = ({
                 height: "500px",
               }}
               onChange={handleEditorChange}
-              renderHTML={(text) => <ReactMarkdown children={text} />}
+              
             />
           </div>
           {validationErrors.desc && (
