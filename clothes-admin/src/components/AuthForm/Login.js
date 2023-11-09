@@ -1,16 +1,15 @@
 "use client";
-import Image from "next/image";
+
 import { signIn } from "next-auth/react";
 
 const Login = () => {
+
   return (
     <div className="flex items-center justify-center w-screen h-screen bg-slate-400">
       <div className="h-96 max-w-sm overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
         <div className="w-full px-6 py-8 md:px-8">
           <div className="flex justify-center mx-auto">
-            <Image
-              height={100}
-              width={100}
+            <img
               className="w-auto h-7 sm:h-8"
               src="https://merakiui.com/images/logo.svg"
               alt="logo"
