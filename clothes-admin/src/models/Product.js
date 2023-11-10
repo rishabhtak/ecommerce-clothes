@@ -22,6 +22,15 @@ const ProductSchema = new Schema(
       type: String,
       required: true,
     },
+    variants: [
+      {
+        size: String,
+        color: String,
+        price: Number,
+        qty: Number,
+        sku: String,
+      },
+    ],
     colors: {
       type: [String],
       required: true,

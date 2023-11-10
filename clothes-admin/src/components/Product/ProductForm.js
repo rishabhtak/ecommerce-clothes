@@ -10,6 +10,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import deleteImages from "@/app/utils/deleteImages";
+import VariantsTable from "../VariantsTable";
 
 const colorsOption = [
   {
@@ -99,6 +100,7 @@ const ProductForm = ({
   images: oldImages,
   desc: oldDesc,
   slug: oldSlug,
+  variants: oldVariants,
 }) => {
   const mdEditor = useRef(null);
   const router = useRouter();
@@ -115,7 +117,10 @@ const ProductForm = ({
   const [isUploading, setIsUploading] = useState(false);
   const [desc, setDesc] = useState(oldDesc || "");
   const [slug, setSlug] = useState(oldSlug || "");
+  const [variants, setVariants] = useState(oldVariants || []);
   const [validationErrors, setValidationErrors] = useState({});
+
+  console.log(variants);
 
   const productSchema = Yup.object().shape({
     productName: Yup.string().required("Product Name is required"),
@@ -133,6 +138,7 @@ const ProductForm = ({
     size: Yup.array().min(1, "Select at least one size"),
     images: Yup.array().min(1, "Select at least one image"),
     desc: Yup.string().required("Product Description is required"),
+    variants: Yup.array().min(1, "Add at least one variant"),
   });
 
   async function uploadImages(ev) {
@@ -169,6 +175,7 @@ const ProductForm = ({
           size,
           images,
           desc,
+          variants,
         },
         { abortEarly: false }
       );
@@ -186,9 +193,9 @@ const ProductForm = ({
         images,
         desc,
         slug,
+        variants,
       };
       if (_id) {
-        console.log(_id);
         const response = await fetch(`/api/products`, {
           method: "PUT",
           headers: {
@@ -345,6 +352,12 @@ const ProductForm = ({
             <option value="tops">Tops</option>
           </select>
         </div>
+        <div className="space-y-1">
+          <VariantsTable variants={variants} setVariants={setVariants} />
+        </div>
+        {validationErrors.variants && (
+          <p className="text-red-600">{validationErrors.variants}</p>
+        )}
         <div className="space-y-1">
           <label htmlFor="color" className="font-medium">
             Colors *
