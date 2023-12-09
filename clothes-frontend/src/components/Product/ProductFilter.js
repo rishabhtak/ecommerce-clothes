@@ -12,72 +12,6 @@ import {
 } from "@heroicons/react/20/solid";
 import ProductCard from "./ProductCard";
 import Pagination from "../Pagination";
-const sortOptions = [
-  { name: "Price: Low to High", price: "asc", current: false },
-  { name: "Price: High to Low", price: "desc", current: false },
-];
-
-const filters = [
-  {
-    id: "colors",
-    name: "Colors",
-    options: [
-      { value: "white", label: "White", checked: false },
-      { value: "black", label: "Black", checked: false },
-      { value: "blue", label: "Blue", checked: false },
-      { value: "brown", label: "Brown", checked: false },
-      { value: "green", label: "Green", checked: false },
-      { value: "red", label: "Red", checked: false },
-      { value: "yellow", label: "Yellow", checked: false },
-    ],
-  },
-  {
-    id: "size",
-    name: "Size",
-    options: [
-      { value: "s", label: "S", checked: false },
-      { value: "m", label: "M", checked: false },
-      { value: "l", label: "L", checked: false },
-      { value: "xl", label: "XL", checked: false },
-      { value: "xxl", label: "XXL", checked: false },
-      { value: "28", label: "28", checked: false },
-      { value: "30", label: "30", checked: false },
-      { value: "32", label: "32", checked: false },
-      { value: "34", label: "34", checked: false },
-      { value: "36", label: "36", checked: false },
-    ],
-  },
-  {
-    id: "price",
-    name: "Price",
-    options: [
-      { value: "1-399", label: "₹1 To ₹399", checked: false },
-      { value: "399-999", label: "₹399 To ₹999", checked: false },
-      { value: "999-1999", label: "₹999 To ₹1999", checked: false },
-      { value: "1999-2999", label: "₹1999 To ₹2999", checked: false },
-      { value: "3999-4999", label: "₹2999 To ₹4999", checked: false },
-    ],
-  },
-  /*  {
-    id: "discount",
-    name: "Discount Price",
-    options: [
-      { value: "10%", label: "10% And Above", checked: false },
-      { value: "20%", label: "20% And Above", checked: false },
-      { value: "30%", label: "30% And Above", checked: false },
-      { value: "40%", label: "40% And Above", checked: false },
-      { value: "50%", label: "50% And Above", checked: false },
-    ],
-  },
-  {
-    id: "availability",
-    name: "Availability",
-    options: [
-      { value: "in_stock", label: "In Stock", checked: false },
-      { value: "out_of_stock", label: "Out Of Stock", checked: false },
-    ],
-  }, */
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -85,9 +19,56 @@ function classNames(...classes) {
 
 // todo: testing local storage
 
-export default function ProductFilter({ data }) {
+export default function ProductFilter({ data, colorOptions, sizeOptions }) {
   const { products, totalProducts } = data;
-  // console.log(data);
+
+  const sortOptions = [
+    { name: "Price: Low to High", price: "asc", current: false },
+    { name: "Price: High to Low", price: "desc", current: false },
+  ];
+
+  const filters = [
+    {
+      id: "colors",
+      name: "Colors",
+      options: colorOptions,
+    },
+    {
+      id: "size",
+      name: "Size",
+      options: sizeOptions,
+    },
+    {
+      id: "price",
+      name: "Price",
+      options: [
+        { value: "1-399", label: "₹1 To ₹399", checked: false },
+        { value: "400-999", label: "₹400 To ₹999", checked: false },
+        { value: "1000-1999", label: "₹1000 To ₹1999", checked: false },
+        { value: "2000-2999", label: "₹2000 To ₹2999", checked: false },
+        { value: "3000-4999", label: "₹3000 To ₹4999", checked: false },
+      ],
+    },
+    /*  {
+      id: "discount",
+      name: "Discount Price",
+      options: [
+        { value: "10%", label: "10% And Above", checked: false },
+        { value: "20%", label: "20% And Above", checked: false },
+        { value: "30%", label: "30% And Above", checked: false },
+        { value: "40%", label: "40% And Above", checked: false },
+        { value: "50%", label: "50% And Above", checked: false },
+      ],
+    },
+    {
+      id: "availability",
+      name: "Availability",
+      options: [
+        { value: "in_stock", label: "In Stock", checked: false },
+        { value: "out_of_stock", label: "Out Of Stock", checked: false },
+      ],
+    }, */
+  ];
 
   const searchParams = useSearchParams();
   const pathname = usePathname();

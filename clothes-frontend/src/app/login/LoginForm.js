@@ -35,7 +35,9 @@ export default function LoginForm() {
         router.push("/");
         router.refresh();
       } else if (response.status === 401) {
-        setMessage("invaild email address or password");
+        setMessage(
+          "The email/password you entered is incorrect. Verify your credentials or try using google to log in."
+        );
       } else {
         setMessage("Somewhere went wrong, please try again later.");
       }

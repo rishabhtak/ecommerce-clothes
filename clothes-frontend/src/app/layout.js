@@ -4,6 +4,7 @@ import "./globals.css";
 import "react-multi-carousel/lib/styles.css";
 import { Oswald, Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
+import CartContextProvider from "@/components/CartContextProvider";
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -25,13 +26,13 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   const session = await getServerSession();
 
-  console.log("session: " + session);
-
   return (
     <html lang="en" className={`${oswald.variable}`}>
       <body className={`${inter.className} antialiased`}>
-        <Header session={session} />
-        {children}
+        <CartContextProvider>
+          <Header session={session} />
+          {children}
+        </CartContextProvider>
         <Footer />
       </body>
     </html>
