@@ -37,14 +37,15 @@ export default function ProductDetail({ productDetail }) {
   // Check if the selected variant is valid
   const isVariantValid = productDetail?.variants.some(
     (variant) =>
-      variant.color === selectedColor && variant.size === selectedSize
+      variant.color === selectedColor &&
+      variant.size === selectedSize &&
+      variant.qty > 0
   );
 
   // Check if the variant is already in the cart
   const isVariantInCart = cartProducts.some(
-    (cartItem) => cartItem.variant._id === selectedVariant?._id
+    (cartItem) => cartItem?.items?.variant_id === selectedVariant?._id
   );
-
 
   return (
     <Wrapper>

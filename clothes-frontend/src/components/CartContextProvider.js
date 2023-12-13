@@ -1,11 +1,13 @@
 "use client";
 import { createContext, useState, useEffect } from "react";
 export const CartContext = createContext({});
-const CartContextProvider = ({ children }) => {
-  //  const ls = typeof window !== "undefined" ? window.localStorage : null;
+const CartContextProvider = ({ children, session }) => {
+  const ls = typeof window !== "undefined" ? window.localStorage : null;
 
   const [cartProducts, setCartProducts] = useState([]);
-  /*  useEffect(() => {
+  const [selectAddress, setSelectAddress] = useState(null);
+  const [orderId, setOrderId] = useState(null);
+  useEffect(() => {
     if (cartProducts?.length > 0) {
       ls?.setItem("cart", JSON.stringify(cartProducts));
     }
@@ -14,7 +16,7 @@ const CartContextProvider = ({ children }) => {
     if (ls && ls.getItem("cart")) {
       setCartProducts(JSON.parse(ls.getItem("cart")));
     }
-  }, []); */
+  }, []);
   const addProduct = (product, selectedColor, selectedSize) => {
     const selectedVariant = product.variants.find(
       (variant) =>
@@ -24,13 +26,57 @@ const CartContextProvider = ({ children }) => {
     if (selectedVariant) {
       setCartProducts((prev) => [
         ...prev,
-        { product, variant: selectedVariant },
+        {
+          items: {
+            _id: product._id,
+            productName: product.productName,
+            category: product.category,
+            subcategory: product.subcategory,
+            variant_id: selectedVariant._id,
+            variant_size: selectedSize,
+            variant_color: selectedColor,
+            variant_price: selectedVariant.price,
+            variant_qty: selectedVariant.qty,
+            images: product.images,
+            slug: product.slug,
+          },
+          total_quantity: 1,
+          total_price: selectedVariant.price,
+        },
       ]);
     }
   };
 
+  const updateQuantity = (index, newQuantity) => {
+    const updatedCartProducts = [...cartProducts];
+    updatedCartProducts[index].total_quantity = newQuantity;
+    updatedCartProducts[index].total_price =
+      newQuantity * updatedCartProducts[index].items.variant_price;
+    setCartProducts(updatedCartProducts);
+  };
+
+  const removeProduct = (index) => {
+    const updatedCartProducts = [...cartProducts];
+    updatedCartProducts.splice(index, 1);
+    setCartProducts(updatedCartProducts);
+    ls?.removeItem("cart");
+  };
+
   return (
-    <CartContext.Provider value={{ cartProducts, setCartProducts, addProduct }}>
+    <CartContext.Provider
+      value={{
+        cartProducts,
+        setCartProducts,
+        addProduct,
+        updateQuantity,
+        removeProduct,
+        session,
+        setSelectAddress,
+        selectAddress,
+        orderId,
+        setOrderId,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

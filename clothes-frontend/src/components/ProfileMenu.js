@@ -3,10 +3,10 @@ import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { signOut } from "next-auth/react";
 
-export default function Logout() {
+export default function ProfileMenu() {
   const userNavigation = [
     { name: "My Orders", href: "/profile/orders" },
-    { name: "Settings", href: "/profile/settings" },
+    { name: "Address", href: "/profile/address" },
     { name: "Sign out", href: "#", signOut: () => signOut() },
   ];
 

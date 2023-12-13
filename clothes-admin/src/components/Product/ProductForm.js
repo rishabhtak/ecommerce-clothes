@@ -120,7 +120,6 @@ const ProductForm = ({
   const [variants, setVariants] = useState(oldVariants || []);
   const [validationErrors, setValidationErrors] = useState({});
 
-  console.log(variants);
 
   const productSchema = Yup.object().shape({
     productName: Yup.string().required("Product Name is required"),

@@ -1,16 +1,14 @@
-import AddressForm from "@/components/Address/AddressForm";
-import AddressCard from "@/components/Address/AddressCard";
-import Stepcount from "@/components/Stepcount";
+import ChooseAddress from "@/components/Address/ChooseAddress";
 import Wrapper from "@/components/Wrapper/Index";
+import Link from "next/link";
 
 const page = () => {
   return (
     <Wrapper>
-      <Stepcount />
-      <div className="grid grid-cols-1 lg:grid-cols-2 py-16 gap-5">
-        <AddressCard />
-        <AddressForm />
-      </div>
+      <h1 className="mb-10 text-center text-2xl font-bold">Choose Address</h1>
+
+      <ChooseAddress />
+    
     </Wrapper>
   );
 };

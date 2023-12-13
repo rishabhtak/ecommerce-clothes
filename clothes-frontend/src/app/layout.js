@@ -29,8 +29,8 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={`${oswald.variable}`}>
       <body className={`${inter.className} antialiased`}>
-        <CartContextProvider>
-          <Header session={session} />
+        <CartContextProvider session={session}>
+          <Header />
           {children}
         </CartContextProvider>
         <Footer />

@@ -2,19 +2,18 @@
 import React, { useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import Wrapper from "../Wrapper/Index";
-import Logout from "@/app/Logout";
+import ProfileMenu from "@/components/ProfileMenu";
 import Link from "next/link";
 import Menu from "./Menu";
 import MenuMobile from "./MenuMobile";
 
-import { IoMdHeartEmpty } from "react-icons/io";
 import { BsCart } from "react-icons/bs";
 import { BiMenuAltRight } from "react-icons/bi";
 import { VscChromeClose } from "react-icons/vsc";
 import { CartContext } from "../CartContextProvider";
 
-const Header = ({ session }) => {
-  const { cartProducts } = useContext(CartContext);
+const Header = () => {
+  const { cartProducts, session } = useContext(CartContext);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [showMenCat, setShowMenCat] = useState(false);
   const [showWomenCat, setShowWomenCat] = useState(false);
@@ -93,7 +92,7 @@ const Header = ({ session }) => {
 
         <div className="flex items-center gap-2 text-black">
           {/* Icon start */}
-          {!!session && <Logout />}
+          {!!session && <ProfileMenu />}
           {!session && (
             <Link
               href="/login"
