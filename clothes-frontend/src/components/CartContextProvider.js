@@ -6,7 +6,6 @@ const CartContextProvider = ({ children, session }) => {
 
   const [cartProducts, setCartProducts] = useState([]);
   const [selectAddress, setSelectAddress] = useState(null);
-  const [orderId, setOrderId] = useState(null);
   useEffect(() => {
     if (cartProducts?.length > 0) {
       ls?.setItem("cart", JSON.stringify(cartProducts));
@@ -73,8 +72,6 @@ const CartContextProvider = ({ children, session }) => {
         session,
         setSelectAddress,
         selectAddress,
-        orderId,
-        setOrderId,
       }}
     >
       {children}

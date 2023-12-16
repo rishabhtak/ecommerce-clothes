@@ -5,9 +5,13 @@ const orderSchema = new Schema(
     items: { type: [Schema.Types.Mixed], required: true },
     finalPrice: { type: Number, required: true },
     finalQuantity: { type: Number, required: true },
+    paymentStatus: { type: String, required: true },
     user: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
+      id: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
+      email: { type: String, required: true },
     },
     selectAddress: { type: Schema.Types.Mixed, required: true },
   },

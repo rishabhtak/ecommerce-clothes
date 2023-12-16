@@ -1,5 +1,6 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Product } from "@/models/Product";
+import { Order } from "@/models/Order";
 
 export const getAllProducts = async ({ combinedQuery, sort, page }) => {
   mongooseConnect();
@@ -17,6 +18,12 @@ export const getAllProducts = async ({ combinedQuery, sort, page }) => {
 export const getProduct = async (query) => {
   mongooseConnect();
   const res = await Product.find(query);
+  return JSON.parse(JSON.stringify(res));
+};
+
+export const getProductByUser = async (query) => {
+  mongooseConnect();
+  const res = await Order.find(query);
   return JSON.parse(JSON.stringify(res));
 };
 

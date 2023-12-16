@@ -2,20 +2,48 @@
 import { useEffect, useContext } from "react";
 import { CartContext } from "./CartContextProvider";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-const OrderConfirm = () => {
+const OrderConfirm = ({ orderId }) => {
   const ls = typeof window !== "undefined" ? window.localStorage : null;
-  const { setSelectAddress, setCartProducts, orderId } =
-    useContext(CartContext);
+  const { setSelectAddress, setCartProducts } = useContext(CartContext);
   const router = useRouter();
+  console.log(orderId);
 
   useEffect(() => {
-    setSelectAddress(null);
-    setCartProducts([]);
-    ls?.removeItem("cart");
+    if (orderId) {
+      setSelectAddress(null);
+      setCartProducts([]);
+      ls?.removeItem("cart");
+    }
   }, []);
 
-  return <div>Order is successfully{orderId}</div>;
+  return (
+    <div className="flex items-center justify-center py-8 md:py-20">
+      <div className="min-h-[400px] flex flex-col items-center justify-center gap-y-3 px-4 text-center">
+        <h2 className="text-lg md:text-4xl font-bold">
+          Your Order is Confirmed.
+          <br />
+          OrderId: #{orderId}
+        </h2>
+        <p className="text-sm md:text-base">
+          Now you can view your Orders or continue Shopping with us
+        </p>
+        <div className="flex flex-col items-center gap-y-3 md:flex-row md:items-center md:gap-x-5">
+          <Link href={"/profile/userorders"}>
+            <button className="bg-black text-slate-100 w-full md:w-44 h-12 rounded-full text-base font-semibold mb-3 md:mb-0 md:mr-3 hover:bg-orange-600 duration-300">
+              View Orders
+            </button>
+          </Link>
+          <Link href={"/"}>
+            <button className="bg-black text-slate-100 w-full md:w-44 h-12 rounded-full text-base font-semibold hover:bg-orange-600 duration-300">
+              Continue Shopping
+            </button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default OrderConfirm;

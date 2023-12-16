@@ -2,13 +2,14 @@
 import { useState, useEffect, useContext } from "react";
 import { CartContext } from "../CartContextProvider";
 import Link from "next/link";
+import { loadStripe } from "@stripe/stripe-js";
 
 const ChooseAddress = () => {
-  const { session, setSelectAddress, selectAddress, cartProducts, setOrderId } =
+  const { session, setSelectAddress, selectAddress, cartProducts } =
     useContext(CartContext);
   const [address, setAddress] = useState([]);
 
-  console.log(address, cartProducts);
+  console.log(cartProducts[0]?.items.productName);
 
   async function getAddress() {
     try {
@@ -39,6 +40,11 @@ const ChooseAddress = () => {
     0
   );
 
+  // =============  Stripe Payment Start here ==============
+  const stripePromise = loadStripe(
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  );
+
   const handleOrder = async (e) => {
     try {
       if (selectAddress && cartProducts) {
@@ -48,15 +54,16 @@ const ChooseAddress = () => {
           finalQuantity: finalQuantity,
           userId: selectAddress.user,
           selectAddress,
+          email: session?.user?.email,
         };
-        const response = await fetch(`/api/order`, {
+        const stripe = await stripePromise;
+        const response = await fetch(`/api/checkout`, {
           method: "POST",
           body: JSON.stringify(order),
         });
         const responseData = await response.json();
         if (responseData.status === 200) {
-          console.log(responseData);
-          setOrderId(responseData.orderId);
+          stripe?.redirectToCheckout({ sessionId: responseData.sessionId });
         } else {
           console.log(responseData);
         }
@@ -67,6 +74,8 @@ const ChooseAddress = () => {
       console.log(error);
     }
   };
+
+  // =============  Stripe Payment End here ==============
 
   useEffect(() => {
     getAddress();
@@ -106,18 +115,13 @@ const ChooseAddress = () => {
       >
         Add New Address
       </Link>
-      <Link
-        href={`${
-          selectAddress && cartProducts.length >= 1 ? "/orderconfirm" : ""
-        }`}
+
+      <button
+        onClick={handleOrder}
+        className="inline-block w-full px-4 py-2 mt-6 mb-6 bg-blue-500 text-white text-center rounded-md transition duration-300 hover:bg-blue-600"
       >
-        <button
-          onClick={handleOrder}
-          className="inline-block w-full px-4 py-2 mt-6 mb-6 bg-blue-500 text-white text-center rounded-md transition duration-300 hover:bg-blue-600"
-        >
-          Continue To Payment
-        </button>
-      </Link>
+        Continue To Payment
+      </button>
     </>
   );
 };

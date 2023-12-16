@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 
 export default function ProfileMenu() {
   const userNavigation = [
-    { name: "My Orders", href: "/profile/orders" },
+    { name: "My Orders", href: "/profile/userorders" },
     { name: "Address", href: "/profile/address" },
     { name: "Sign out", href: "#", signOut: () => signOut() },
   ];

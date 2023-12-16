@@ -2,10 +2,10 @@ import React from "react";
 import Wrapper from "@/components/Wrapper/Index";
 import OrderConfirm from "@/components/OrderConfirm";
 
-const page = () => {
+const page = async ({ searchParams }) => {
   return (
     <Wrapper>
-      <OrderConfirm />
+      <OrderConfirm orderId={searchParams.orderId} />
     </Wrapper>
   );
 };
