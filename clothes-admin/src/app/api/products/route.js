@@ -57,7 +57,6 @@ export async function PUT(req) {
       newProduct.desc = desc;
       newProduct.slug = slug;
       newProduct.variants = variants;
-      await mongooseConnect();
       await Product.findByIdAndUpdate(id, { $set: newProduct }, { new: true });
       return new NextResponse("Success", { status: 200 });
     }

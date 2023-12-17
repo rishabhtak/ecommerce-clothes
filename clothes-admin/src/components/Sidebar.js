@@ -94,7 +94,7 @@ const Sidebar = () => {
                           d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
                         />
                       </svg>
-                      <span className="ml-4">Dashboard</span>
+                      <span className="ml-4">Home</span>
                     </Link>
                   </li>
                   <li>
@@ -129,13 +129,17 @@ const Sidebar = () => {
                     </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       className={`inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline ${
                         pathname === "/users"
                           ? "bg-indigo-600"
                           : "hover:bg-indigo-600"
                       }`}
-                      href="#"
+                      href="/users"
+                      onClick={() => {
+                        setShowMenu("hidden");
+                        setHideButton("block");
+                      }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -152,7 +156,7 @@ const Sidebar = () => {
                         />
                       </svg>
                       <span className="ml-4">Users</span>
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <a
@@ -161,7 +165,11 @@ const Sidebar = () => {
                           ? "bg-indigo-600"
                           : "hover:bg-indigo-600"
                       }`}
-                      href="#"
+                      href="/orders"
+                      onClick={() => {
+                        setShowMenu("hidden");
+                        setHideButton("block");
+                      }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -178,32 +186,6 @@ const Sidebar = () => {
                         />
                       </svg>
                       <span className="ml-4">Orders</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className={`inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline ${
-                        pathname === "/settings"
-                          ? "bg-indigo-600"
-                          : "hover:bg-indigo-600"
-                      }`}
-                      href="#"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="w-4 h-4"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
-                        />
-                      </svg>
-                      <span className="ml-4">Settings</span>
                     </a>
                   </li>
                   <li>
