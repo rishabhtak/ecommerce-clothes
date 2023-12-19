@@ -72,9 +72,7 @@ const VariantsTable = ({ variants, setVariants }) => {
     return variants.some(
       (v) =>
         v.size.toLowerCase() === variant.size.toLowerCase() &&
-        v.color.toLowerCase() === variant.color.toLowerCase() &&
-        v.price.toLowerCase() === variant.price.toLowerCase() &&
-        v.qty.toLowerCase() === variant.qty.toLowerCase()
+        v.color.toLowerCase() === variant.color.toLowerCase()
     );
   };
 

@@ -11,7 +11,6 @@ export async function POST(req) {
     await Product.create(body);
     return new NextResponse("Success", { status: 200 });
   } catch (error) {
-    console.log(error);
     return new NextResponse("Internal Server Error", {
       status: 500,
       error: error,
@@ -30,12 +29,8 @@ export async function PUT(req) {
     } else {
       const {
         productName,
-        price,
-        qty,
         category,
         subcategory,
-        colors,
-        size,
         featured,
         archived,
         images,
@@ -45,12 +40,8 @@ export async function PUT(req) {
       } = body.data;
       const newProduct = {};
       newProduct.productName = productName;
-      newProduct.price = price;
-      newProduct.qty = qty;
       newProduct.category = category;
       newProduct.subcategory = subcategory;
-      newProduct.colors = colors;
-      newProduct.size = size;
       newProduct.featured = featured;
       newProduct.archived = archived;
       newProduct.images = images;

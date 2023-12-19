@@ -1,6 +1,5 @@
 "use client";
 import { useState, useRef } from "react";
-import Select from "antd/es/Select";
 import { useRouter } from "next/navigation";
 import Spinner from "../Spinner";
 import Editor from "react-markdown-editor-lite";
@@ -12,89 +11,11 @@ import * as Yup from "yup";
 import deleteImages from "@/app/utils/deleteImages";
 import VariantsTable from "../VariantsTable";
 
-const colorsOption = [
-  {
-    value: "white",
-    label: "White",
-  },
-  {
-    value: "black",
-    label: "Black",
-  },
-  {
-    value: "blue",
-    label: "Blue",
-  },
-  {
-    value: "yellow",
-    label: "Yellow",
-  },
-  {
-    value: "red",
-    label: "Red",
-  },
-  {
-    value: "green",
-    label: "Green",
-  },
-  {
-    value: "brown",
-    label: "Brown",
-  },
-];
-
-const sizeOption = [
-  {
-    value: "s",
-    label: "S",
-  },
-  {
-    value: "m",
-    label: "M",
-  },
-  {
-    value: "l",
-    label: "L",
-  },
-  {
-    value: "xl",
-    label: "XL",
-  },
-  {
-    value: "xxl",
-    label: "XXL",
-  },
-  {
-    value: "28",
-    label: "28",
-  },
-  {
-    value: "30",
-    label: "30",
-  },
-  {
-    value: "32",
-    label: "32",
-  },
-  {
-    value: "34",
-    label: "34",
-  },
-  {
-    value: "36",
-    label: "36",
-  },
-];
-
 const ProductForm = ({
   _id,
   productName: oldProductName,
-  price: oldPrice,
-  qty: oldQty,
   category: oldCategory,
   subcategory: oldSubcategory,
-  colors: oldColors,
-  size: oldSize,
   featured: oldFeatured,
   archived: oldArchived,
   images: oldImages,
@@ -105,12 +26,8 @@ const ProductForm = ({
   const mdEditor = useRef(null);
   const router = useRouter();
   const [productName, setProductName] = useState(oldProductName || "");
-  const [price, setPrice] = useState(oldPrice || "");
-  const [qty, setQty] = useState(oldQty || "");
   const [category, setCategory] = useState(oldCategory || "men");
   const [subcategory, setSubcategory] = useState(oldSubcategory || "tshirt");
-  const [colors, setColors] = useState(oldColors || []);
-  const [size, setSize] = useState(oldSize || []);
   const [featured, setFeatured] = useState(oldFeatured || false);
   const [archived, setArchived] = useState(oldArchived || false);
   const [images, setImages] = useState(oldImages || []);
@@ -120,21 +37,8 @@ const ProductForm = ({
   const [variants, setVariants] = useState(oldVariants || []);
   const [validationErrors, setValidationErrors] = useState({});
 
-
   const productSchema = Yup.object().shape({
     productName: Yup.string().required("Product Name is required"),
-    price: Yup.number()
-      .typeError("Please enter correct value")
-      .positive("Please enter correct value")
-      .integer("Please enter correct value")
-      .required("Product Price is required"),
-    qty: Yup.number()
-      .typeError("Please enter correct value")
-      .positive("Please enter correct value")
-      .integer("Please enter correct value")
-      .required("Product Quantity is required"),
-    colors: Yup.array().min(1, "Select at least one color"),
-    size: Yup.array().min(1, "Select at least one size"),
     images: Yup.array().min(1, "Select at least one image"),
     desc: Yup.string().required("Product Description is required"),
     variants: Yup.array().min(1, "Add at least one variant"),
@@ -168,10 +72,6 @@ const ProductForm = ({
       await productSchema.validate(
         {
           productName,
-          price,
-          qty,
-          colors,
-          size,
           images,
           desc,
           variants,
@@ -181,12 +81,8 @@ const ProductForm = ({
 
       const data = {
         productName,
-        price,
-        qty,
         category,
         subcategory,
-        colors,
-        size,
         featured,
         archived,
         images,
@@ -284,40 +180,7 @@ const ProductForm = ({
             <p className="text-red-600">{validationErrors.productName}</p>
           )}
         </div>
-        <div className="space-y-1">
-          <label htmlFor="price" className="font-medium">
-            Product Price (in indian rupees) *
-          </label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder="Product Price"
-            className="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-          />
-          {validationErrors.price && (
-            <p className="text-red-600">{validationErrors.price}</p>
-          )}
-        </div>
-        <div className="space-y-1">
-          <label htmlFor="price" className="font-medium">
-            Product Quantity *
-          </label>
-          <input
-            type="number"
-            id="qty"
-            name="qty"
-            value={qty}
-            onChange={(e) => setQty(e.target.value)}
-            placeholder="Product Quantity"
-            className="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-          />
-          {validationErrors.qty && (
-            <p className="text-red-600">{validationErrors.qty}</p>
-          )}
-        </div>
+
         <div className="space-y-1">
           <label htmlFor="category" className="font-medium">
             Category *
@@ -357,48 +220,7 @@ const ProductForm = ({
         {validationErrors.variants && (
           <p className="text-red-600">{validationErrors.variants}</p>
         )}
-        <div className="space-y-1">
-          <label htmlFor="color" className="font-medium">
-            Colors *
-          </label>
-          <Select
-            name="colors"
-            id="colors"
-            mode="multiple"
-            size="large"
-            placeholder="Select Colors"
-            defaultValue={colors}
-            onChange={(e) => setColors(e)}
-            style={{
-              width: "100%",
-            }}
-            options={colorsOption}
-          />
-          {validationErrors.colors && (
-            <p className="text-red-600">{validationErrors.colors}</p>
-          )}
-        </div>
-        <div className="space-y-1">
-          <label htmlFor="size" className="font-medium">
-            Size *
-          </label>
-          <Select
-            name="size"
-            id="size"
-            mode="multiple"
-            size="large"
-            placeholder="Select Size"
-            defaultValue={size}
-            onChange={(e) => setSize(e)}
-            style={{
-              width: "100%",
-            }}
-            options={sizeOption}
-          />
-          {validationErrors.size && (
-            <p className="text-red-600">{validationErrors.size}</p>
-          )}
-        </div>
+
         <div className="space-y-1">
           <label htmlFor="price" className="font-medium">
             This product will appear on the home page.

@@ -1,7 +1,6 @@
 import UpdateProduct from "@/components/Product/UpdateProduct";
 
 const page = ({ params }) => {
-  //  console.log();
 
   return (
     <>

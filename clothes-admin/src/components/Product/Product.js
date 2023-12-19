@@ -25,9 +25,6 @@ const Product = () => {
     columnHelper.accessor("productName", {
       header: () => "Name",
     }),
-    columnHelper.accessor("price", {
-      header: () => "Price",
-    }),
     columnHelper.accessor("images", {
       header: () => "Images",
       cell: (info) => (
@@ -52,6 +49,9 @@ const Product = () => {
     }),
     columnHelper.accessor("category", {
       header: () => "Category",
+    }),
+    columnHelper.accessor("subcategory", {
+      header: () => "Sub-Category",
     }),
     columnHelper.accessor("actions", {
       header: () => "Actions",
