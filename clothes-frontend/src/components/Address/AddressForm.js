@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useContext, useEffect } from "react";
+import { useState, useRef, useContext, useEffect, useCallback } from "react";
 import { CartContext } from "../CartContextProvider";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
@@ -27,7 +27,7 @@ const AddressForm = () => {
   const { session } = useContext(CartContext);
   const [address, setAddress] = useState([]);
 
-  async function getAddress() {
+  const getAddress = useCallback(async () => {
     try {
       const response = await fetch(`/api/address`, {
         method: "GET",
@@ -40,16 +40,16 @@ const AddressForm = () => {
       if (data.status === 200) {
         setAddress(data.address);
       } else {
-        toast.error("Error fetching address");
+        toast.error("Couldn't get address,Please try again later");
       }
     } catch (error) {
       toast.error("Something went wrong, please try again later");
     }
-  }
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     getAddress();
-  }, []);
+  }, [getAddress]);
 
   async function deleteAddress(id) {
     try {

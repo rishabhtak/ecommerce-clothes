@@ -39,7 +39,7 @@ export default function ProductDetail({ productDetail }) {
     if (newVariant) {
       setSelectedVariant(newVariant);
     }
-  }, [selectedColor, selectedSize]);
+  }, [selectedColor, selectedSize, productDetail?.variants]);
 
   // Check if the selected variant is valid
   const isVariantValid = productDetail?.variants.some(

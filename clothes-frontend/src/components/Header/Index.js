@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import Image from "next/image";
 import Wrapper from "../Wrapper/Index";
 import ProfileMenu from "@/components/ProfileMenu";
@@ -34,7 +34,7 @@ const Header = () => {
     { id: 4, name: "Trouser", url: "/women/trouser" },
   ];
 
-  const controlNavbar = () => {
+  const controlNavbar = useCallback(() => {
     if (window.scrollY > 200) {
       if (window.scrollY > lastScrollY && !mobileMenu) {
         setShow("-translate-y-[80px]");
@@ -45,14 +45,15 @@ const Header = () => {
       setShow("translate-y-0");
     }
     setLastScrollY(window.scrollY);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", controlNavbar);
     return () => {
       window.removeEventListener("scroll", controlNavbar);
     };
-  }, [lastScrollY]);
+  }, [lastScrollY, controlNavbar]);
 
   return (
     <header

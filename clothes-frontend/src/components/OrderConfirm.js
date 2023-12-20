@@ -14,7 +14,7 @@ const OrderConfirm = ({ orderId }) => {
       setCartProducts([]);
       ls?.removeItem("cart");
     }
-  }, []);
+  }, [ls, orderId, setCartProducts, setSelectAddress]);
 
   if (!orderId) {
     return redirect("/");

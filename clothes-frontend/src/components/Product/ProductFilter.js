@@ -21,35 +21,41 @@ function classNames(...classes) {
 export default function ProductFilter({ data, colorOptions, sizeOptions }) {
   const { products, totalProducts } = data;
 
-  const filters = [
-    {
-      id: "colors",
-      name: "Colors",
-      options: colorOptions,
-    },
-    {
-      id: "size",
-      name: "Size",
-      options: sizeOptions,
-    },
-    {
-      id: "price",
-      name: "Price",
-      options: [
-        { value: "1-399", label: "₹1 To ₹399", checked: false },
-        { value: "400-999", label: "₹400 To ₹999", checked: false },
-        { value: "1000-1999", label: "₹1000 To ₹1999", checked: false },
-        { value: "2000-2999", label: "₹2000 To ₹2999", checked: false },
-        { value: "3000-4999", label: "₹3000 To ₹4999", checked: false },
-      ],
-    },
-  ];
+  const filters = useMemo(
+    () => [
+      {
+        id: "colors",
+        name: "Colors",
+        options: colorOptions,
+      },
+      {
+        id: "size",
+        name: "Size",
+        options: sizeOptions,
+      },
+      {
+        id: "price",
+        name: "Price",
+        options: [
+          { value: "1-399", label: "₹1 To ₹399", checked: false },
+          { value: "400-999", label: "₹400 To ₹999", checked: false },
+          { value: "1000-1999", label: "₹1000 To ₹1999", checked: false },
+          { value: "2000-2999", label: "₹2000 To ₹2999", checked: false },
+          { value: "3000-4999", label: "₹3000 To ₹4999", checked: false },
+        ],
+      },
+    ],
+    [colorOptions, sizeOptions]
+  );
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const params = new URLSearchParams(searchParams);
+  const params = useMemo(
+    () => new URLSearchParams(searchParams),
+    [searchParams]
+  );
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filter, setFilter] = useState({});
@@ -129,7 +135,7 @@ export default function ProductFilter({ data, colorOptions, sizeOptions }) {
       }
     });
     replace(`${pathname}?${params}`);
-  }, [filter]);
+  }, [filter, filters, params, pathname, replace]);
 
   return (
     <div>

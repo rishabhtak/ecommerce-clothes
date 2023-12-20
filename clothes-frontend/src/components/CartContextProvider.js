@@ -10,12 +10,12 @@ const CartContextProvider = ({ children, session }) => {
     if (cartProducts?.length > 0) {
       ls?.setItem("cart", JSON.stringify(cartProducts));
     }
-  }, [cartProducts]);
+  }, [cartProducts, ls]);
   useEffect(() => {
     if (ls && ls.getItem("cart")) {
       setCartProducts(JSON.parse(ls.getItem("cart")));
     }
-  }, []);
+  }, [ls]);
   const addProduct = (product, selectedColor, selectedSize) => {
     const selectedVariant = product.variants.find(
       (variant) =>

@@ -89,7 +89,7 @@ const Footer = () => {
                 className="w-32"
               />
               <p className="leading-relaxed mt-2 text-[15px]">
-                Lorem Ipsum has been the industry's standard dummy text ever
+                Lorem Ipsum has been the industry&apos;s standard dummy text ever
                 since the 1500s.
               </p>
             </div>

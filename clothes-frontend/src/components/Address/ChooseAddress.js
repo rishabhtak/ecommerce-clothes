@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { CartContext } from "../CartContextProvider";
 import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
@@ -11,7 +11,16 @@ const ChooseAddress = () => {
     useContext(CartContext);
   const [address, setAddress] = useState([]);
 
-  async function getAddress() {
+  const finalPrice = cartProducts.reduce(
+    (amount, item) => amount + item.total_price,
+    0
+  );
+  const finalQuantity = cartProducts.reduce(
+    (total, item) => item.total_quantity + total,
+    0
+  );
+
+  const getAddress = useCallback(async () => {
     try {
       const response = await fetch(`/api/address`, {
         method: "GET",
@@ -29,16 +38,11 @@ const ChooseAddress = () => {
     } catch (error) {
       toast.error("Something went wrong, please try again later");
     }
-  }
-
-  const finalPrice = cartProducts.reduce(
-    (amount, item) => amount + item.total_price,
-    0
-  );
-  const finalQuantity = cartProducts.reduce(
-    (total, item) => item.total_quantity + total,
-    0
-  );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    getAddress();
+  }, [getAddress]);
 
   // =============  Stripe Payment Start here ==============
   const stripePromise = loadStripe(
@@ -76,10 +80,6 @@ const ChooseAddress = () => {
   };
 
   // =============  Stripe Payment End here ==============
-
-  useEffect(() => {
-    getAddress();
-  }, []);
 
   if (cartProducts.length <= 0) {
     return redirect("/");
