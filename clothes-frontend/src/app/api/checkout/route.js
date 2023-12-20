@@ -1,11 +1,11 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Order } from "@/models/Order";
 import { User } from "@/models/User";
+import { Product } from "@/models/Product";
 import Stripe from "stripe";
 
 export async function POST(req) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
   try {
     await mongooseConnect();
     const { items, finalPrice, finalQuantity, userId, selectAddress, email } =
@@ -27,6 +27,27 @@ export async function POST(req) {
           email: email,
         },
         selectAddress,
+      });
+
+      //  const productId = "6539135b9d111774a30f2dff";
+
+      createdOrder.items.forEach(async (item) => {
+        const variantId = item.items.variant_id;
+        const totalQuantity = item.total_quantity;
+        const productId = item.items._id;
+
+        // Update product variant quantity based on order quantity
+        const updateQuery = {
+          $inc: {
+            "variants.$.qty": -1 * totalQuantity,
+          },
+        };
+
+        // Find the product by _id and update the variant quantity
+        await Product.updateOne(
+          { _id: productId, "variants._id": variantId },
+          updateQuery
+        );
       });
 
       const extractingItems = await items.map((item, index) => ({
@@ -69,7 +90,6 @@ export async function POST(req) {
       });
     }
   } catch (error) {
-    console.log("error", error);
     return Response.json({
       message: "Something went wrong,Please try again later",
       status: 500,

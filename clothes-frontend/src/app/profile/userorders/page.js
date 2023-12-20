@@ -10,8 +10,6 @@ const page = async () => {
     "user.email": session?.user?.email,
   });
 
-  console.log(orders);
-
   return <UserOrders orders={orders} />;
 };
 

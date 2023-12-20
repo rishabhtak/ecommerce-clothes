@@ -2,6 +2,7 @@
 import { useState, useRef, useContext, useEffect } from "react";
 import { CartContext } from "../CartContextProvider";
 import * as Yup from "yup";
+import { ToastContainer, toast } from "react-toastify";
 
 export const addressSchema = Yup.object().shape({
   fullname: Yup.string().required("Please enter name"),
@@ -23,7 +24,6 @@ export const addressSchema = Yup.object().shape({
 const AddressForm = () => {
   const formRef = useRef(null);
   const [validationErrors, setValidationErrors] = useState({});
-  const [message, setMessage] = useState(null);
   const { session } = useContext(CartContext);
   const [address, setAddress] = useState([]);
 
@@ -40,10 +40,10 @@ const AddressForm = () => {
       if (data.status === 200) {
         setAddress(data.address);
       } else {
-        console.log(data);
+        toast.error("Error fetching address");
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Something went wrong, please try again later");
     }
   }
 
@@ -64,11 +64,12 @@ const AddressForm = () => {
       const res = await response.json();
       if (res.status === 200) {
         getAddress();
+        toast.success("Address deleted");
       } else {
-        console.log(res);
+        toast.error("Address not deleted");
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Something went wrong, please try again later");
     }
   }
 
@@ -96,11 +97,11 @@ const AddressForm = () => {
       });
       const responseData = await response.json();
       if (responseData.status === 200) {
-        setMessage("Address Created successfull");
+        toast.success("Address Created successfull");
         formRef.current.reset();
         getAddress();
       } else {
-        setMessage("Somewhere went wrong, please try again later.");
+        toast.error("sorry address was not created, please try again later");
         formRef.current.reset();
       }
     } catch (error) {
@@ -111,7 +112,7 @@ const AddressForm = () => {
         });
         setValidationErrors(errors);
       } else {
-        setMessage("Somewhere went wrong, please try again later.");
+        toast.error("Somewhere went wrong, please try again later.");
         formRef.current.reset();
       }
     }
@@ -119,6 +120,7 @@ const AddressForm = () => {
 
   return (
     <>
+      <ToastContainer />
       <div className="bg-white/25 w-full shadow rounded p-8 sm:p-12">
         <form ref={formRef} onSubmit={handleSubmit}>
           <div className="md:flex items-center mt-12">

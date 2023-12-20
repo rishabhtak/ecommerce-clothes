@@ -6,14 +6,6 @@ const ProductSchema = new Schema(
       type: String,
       required: true,
     },
-    price: {
-      type: Number,
-      required: true,
-    },
-    qty: {
-      type: Number,
-      required: true,
-    },
     category: {
       type: String,
       required: true,
@@ -22,14 +14,15 @@ const ProductSchema = new Schema(
       type: String,
       required: true,
     },
-    colors: {
-      type: [String],
-      required: true,
-    },
-    size: {
-      type: [String],
-      required: true,
-    },
+    variants: [
+      {
+        size: String,
+        color: String,
+        price: Number,
+        qty: Number,
+        sku: String,
+      },
+    ],
     featured: {
       type: Boolean,
       default: false,

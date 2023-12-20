@@ -3,7 +3,6 @@ import { Fragment, useState, useMemo, useEffect } from "react";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   ChevronDownIcon,
   FunnelIcon,
@@ -21,11 +20,6 @@ function classNames(...classes) {
 
 export default function ProductFilter({ data, colorOptions, sizeOptions }) {
   const { products, totalProducts } = data;
-
-  const sortOptions = [
-    { name: "Price: Low to High", price: "asc", current: false },
-    { name: "Price: High to Low", price: "desc", current: false },
-  ];
 
   const filters = [
     {
@@ -49,25 +43,6 @@ export default function ProductFilter({ data, colorOptions, sizeOptions }) {
         { value: "3000-4999", label: "₹3000 To ₹4999", checked: false },
       ],
     },
-    /*  {
-      id: "discount",
-      name: "Discount Price",
-      options: [
-        { value: "10%", label: "10% And Above", checked: false },
-        { value: "20%", label: "20% And Above", checked: false },
-        { value: "30%", label: "30% And Above", checked: false },
-        { value: "40%", label: "40% And Above", checked: false },
-        { value: "50%", label: "50% And Above", checked: false },
-      ],
-    },
-    {
-      id: "availability",
-      name: "Availability",
-      options: [
-        { value: "in_stock", label: "In Stock", checked: false },
-        { value: "out_of_stock", label: "Out Of Stock", checked: false },
-      ],
-    }, */
   ];
 
   const searchParams = useSearchParams();
@@ -78,6 +53,37 @@ export default function ProductFilter({ data, colorOptions, sizeOptions }) {
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filter, setFilter] = useState({});
+  const [currentSort, setCurrentSort] = useState(null);
+  const [productsData, setProductData] = useState(products || []);
+
+  const handleSort = (direction) => {
+    // Update the state to reflect the current sorting option
+    setCurrentSort(direction);
+
+    // Sort the products array based on the selected direction (asc or desc)
+    const sortedProducts = [...products].sort((a, b) => {
+      const priceA = a.minPrice;
+      const priceB = b.minPrice;
+
+      return direction === "asc" ? priceA - priceB : priceB - priceA;
+    });
+
+    // Update the products state with the sorted array
+    setProductData(sortedProducts);
+  };
+
+  const sortOptions = [
+    {
+      name: "Price: Low to High",
+      callback: () => handleSort("asc"),
+      current: currentSort === "asc",
+    },
+    {
+      name: "Price: High to Low",
+      callback: () => handleSort("desc"),
+      current: currentSort === "desc",
+    },
+  ];
 
   const getCheckboxState = useMemo(() => {
     return (sectionId, optionValue) => {
@@ -112,11 +118,6 @@ export default function ProductFilter({ data, colorOptions, sizeOptions }) {
     let page = params.get("page") ? Number(params.get("page")) : 1;
     if (page !== 1) {
       params.set("page", 1);
-    }
-
-    const sortingParam = params.get("sort");
-    if (sortingParam) {
-      params.set("sort", sortingParam);
     }
     // Handle filter parameters
     filters.forEach((section) => {
@@ -285,15 +286,7 @@ export default function ProductFilter({ data, colorOptions, sizeOptions }) {
                     {sortOptions.map((option) => (
                       <Menu.Item key={option.name}>
                         {({ active }) => (
-                          <Link
-                            href={{
-                              pathname: pathname,
-                              query: {
-                                ...Object.fromEntries(params),
-                                sort: option.price,
-                                page: 1,
-                              },
-                            }}
+                          <button
                             className={classNames(
                               option.current
                                 ? "font-medium text-blue-900"
@@ -301,9 +294,10 @@ export default function ProductFilter({ data, colorOptions, sizeOptions }) {
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm"
                             )}
+                            onClick={option.callback}
                           >
                             {option.name}
-                          </Link>
+                          </button>
                         )}
                       </Menu.Item>
                     ))}
@@ -404,7 +398,7 @@ export default function ProductFilter({ data, colorOptions, sizeOptions }) {
             {/* Product grid */}
             {totalProducts ? (
               <div className="lg:col-span-4">
-                <ProductCard products={products} />
+                <ProductCard products={productsData} />
                 <Pagination
                   totalProducts={totalProducts}
                   currentPage={params.get("page")}

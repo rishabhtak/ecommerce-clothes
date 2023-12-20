@@ -14,14 +14,21 @@ function classNames(...classes) {
 export default function ProductDetail({ productDetail }) {
   const { addProduct, cartProducts } = useContext(CartContext);
 
-  const [selectedColor, setSelectedColor] = useState(
-    productDetail?.variants[0]?.color
+  // Extract unique sizes and colors
+  const uniqueSizes = Array.from(
+    new Set(productDetail?.variants.map((variant) => variant.size))
   );
-  const [selectedSize, setSelectedSize] = useState(
-    productDetail?.variants[0]?.size
+  const uniqueColors = Array.from(
+    new Set(productDetail?.variants.map((variant) => variant.color))
   );
+
+  const [selectedColor, setSelectedColor] = useState(uniqueColors[0]);
+  const [selectedSize, setSelectedSize] = useState(uniqueSizes[0]);
   const [selectedVariant, setSelectedVariant] = useState(
-    productDetail?.variants[0]
+    productDetail?.variants.find(
+      (variant) =>
+        variant.color === selectedColor && variant.size === selectedSize
+    )
   );
 
   useEffect(() => {
@@ -43,7 +50,7 @@ export default function ProductDetail({ productDetail }) {
   );
 
   // Check if the variant is already in the cart
-  const isVariantInCart = cartProducts.some(
+  const isVariantInCart = cartProducts?.some(
     (cartItem) => cartItem?.items?.variant_id === selectedVariant?._id
   );
 
@@ -54,14 +61,14 @@ export default function ProductDetail({ productDetail }) {
         <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
           <div className="rounded-lg lg:block col-span-2 relative">
             <ProductDetailCarousel
-              images={productDetail.images}
-              productName={productDetail.productName}
+              images={productDetail?.images}
+              productName={productDetail?.productName}
             />
           </div>
           <div className="mt-28 lg:mt-0 col-span-1">
             <div className="lg:col-span-2 lg:pr-8">
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-5">
-                {productDetail.productName}
+                {productDetail?.productName}
               </h1>
             </div>
             <h2 className="sr-only">Product information</h2>
@@ -78,21 +85,20 @@ export default function ProductDetail({ productDetail }) {
                 onChange={setSelectedColor}
                 className="mt-4"
               >
+                {/* Render unique colors only once */}
                 <RadioGroup.Label className="sr-only">
                   Choose a color
                 </RadioGroup.Label>
                 <div className="flex items-center space-x-3">
-                  {productDetail?.variants?.map((variant) => (
+                  {uniqueColors.map((color) => (
                     <RadioGroup.Option
-                      key={variant.color}
-                      value={variant.color}
+                      key={color}
+                      value={color}
                       className="cursor-pointer bg-white text-gray-900 shadow-sm group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1"
                     >
                       {({ checked }) => (
                         <>
-                          <RadioGroup.Label as="span">
-                            {variant.color}
-                          </RadioGroup.Label>
+                          <RadioGroup.Label as="span">{color}</RadioGroup.Label>
                           <span
                             className={classNames(
                               checked
@@ -121,21 +127,20 @@ export default function ProductDetail({ productDetail }) {
                 onChange={setSelectedSize}
                 className="mt-4"
               >
+                {/* Render unique sizes only once */}
                 <RadioGroup.Label className="sr-only">
                   Choose a size
                 </RadioGroup.Label>
                 <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
-                  {productDetail?.variants?.map((variant) => (
+                  {uniqueSizes.map((size) => (
                     <RadioGroup.Option
-                      key={variant.size}
-                      value={variant.size}
+                      key={size}
+                      value={size}
                       className="cursor-pointer bg-white text-gray-900 shadow-sm group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1"
                     >
                       {({ checked }) => (
                         <>
-                          <RadioGroup.Label as="span">
-                            {variant.size}
-                          </RadioGroup.Label>
+                          <RadioGroup.Label as="span">{size}</RadioGroup.Label>
                           <span
                             className={classNames(
                               checked
@@ -192,7 +197,7 @@ export default function ProductDetail({ productDetail }) {
           </h3>
 
           <div className="prose space-y-6">
-            <ReactMarkdown>{productDetail.desc}</ReactMarkdown>
+            <ReactMarkdown>{productDetail?.desc}</ReactMarkdown>
           </div>
         </div>
       </div>

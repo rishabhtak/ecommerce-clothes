@@ -3,13 +3,13 @@ import { useState, useEffect, useContext } from "react";
 import { CartContext } from "../CartContextProvider";
 import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
+import { redirect } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
 
 const ChooseAddress = () => {
   const { session, setSelectAddress, selectAddress, cartProducts } =
     useContext(CartContext);
   const [address, setAddress] = useState([]);
-
-  console.log(cartProducts[0]?.items.productName);
 
   async function getAddress() {
     try {
@@ -24,10 +24,10 @@ const ChooseAddress = () => {
       if (data.status === 200) {
         setAddress(data.address);
       } else {
-        console.log(data);
+        toast.error("Couldn't get address,Please try again later");
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Something went wrong, please try again later");
     }
   }
 
@@ -65,13 +65,13 @@ const ChooseAddress = () => {
         if (responseData.status === 200) {
           stripe?.redirectToCheckout({ sessionId: responseData.sessionId });
         } else {
-          console.log(responseData);
+          toast.error("Sorry order not created. Please try again later");
         }
       } else {
-        alert("Select Address or product");
+        toast.error("Please choose address");
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Something went wrong, please try again later");
     }
   };
 
@@ -81,8 +81,13 @@ const ChooseAddress = () => {
     getAddress();
   }, []);
 
+  if (cartProducts.length <= 0) {
+    return redirect("/");
+  }
+
   return (
     <>
+      <ToastContainer />
       <div className="shadow rounded cursor-pointer text-center">
         {address.length > 0 ? (
           address?.map((elem) => (

@@ -1,14 +1,12 @@
 "use client";
 import { useEffect, useContext } from "react";
 import { CartContext } from "./CartContextProvider";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const OrderConfirm = ({ orderId }) => {
   const ls = typeof window !== "undefined" ? window.localStorage : null;
   const { setSelectAddress, setCartProducts } = useContext(CartContext);
-  const router = useRouter();
-  console.log(orderId);
 
   useEffect(() => {
     if (orderId) {
@@ -18,14 +16,18 @@ const OrderConfirm = ({ orderId }) => {
     }
   }, []);
 
+  if (!orderId) {
+    return redirect("/");
+  }
   return (
     <div className="flex items-center justify-center py-8 md:py-20">
       <div className="min-h-[400px] flex flex-col items-center justify-center gap-y-3 px-4 text-center">
-        <h2 className="text-lg md:text-4xl font-bold">
+        <p className="text-lg md:text-4xl font-bold">Thank You For Shopping</p>
+        <p className="text-lg md:text-4xl font-bold">
           Your Order is Confirmed.
           <br />
           OrderId: #{orderId}
-        </h2>
+        </p>
         <p className="text-sm md:text-base">
           Now you can view your Orders or continue Shopping with us
         </p>

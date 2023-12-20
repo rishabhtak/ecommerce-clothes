@@ -26,12 +26,12 @@ export default function ProductCard({ products  }) {
                   {element?.discountPrice ? (
                     <>
                       <span className="mr-2 line-through">
-                        ₹{element.price}
+                        ₹{element.minPrice}
                       </span>
                       <span>₹{element.discountPrice}</span>
                     </>
                   ) : (
-                    <>₹{element.price}</>
+                    <>₹{element.minPrice}</>
                   )}
                 </span>
                 <span className="font-semibold text-amber-500">

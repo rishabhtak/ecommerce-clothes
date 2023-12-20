@@ -28,7 +28,6 @@ const page = async ({ params, searchParams }) => {
     ? { subcategory: params.subcategory }
     : null;
 
-  let sort = searchParams.sort ? { price: searchParams.sort } : null;
 
   let page = searchParams.page ? Number(searchParams.page) : 1;
 
@@ -43,8 +42,7 @@ const page = async ({ params, searchParams }) => {
     ],
   };
 
-  const data = await getAllProducts({ combinedQuery, sort, page });
-
+  const data = await getAllProducts({ combinedQuery, page });
   // get all colors and size
   const products = await getProduct(subcategory, category);
   const uniqueColors = [

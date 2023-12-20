@@ -8,14 +8,12 @@ const Cart = () => {
   const { cartProducts, updateQuantity, removeProduct, session } =
     useContext(CartContext);
 
-  // Function to calculate the subtotal
   const calculateSubtotal = () => {
     return cartProducts.reduce((total, item) => {
       return total + item.total_price;
     }, 0);
   };
 
-  // Function to calculate the total
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
     const deliveryCharges = 0;
@@ -36,8 +34,9 @@ const Cart = () => {
       </div>
     );
   }
+
   return (
-    <div className="h-screen bg-gray-100 pt-20">
+    <div className="min-h-screen bg-gray-100 py-20">
       <h1 className="mb-10 text-center text-2xl font-bold">Cart Items</h1>
       <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
         <div className="rounded-lg md:w-2/3">
@@ -62,14 +61,20 @@ const Cart = () => {
                     {data?.items?.category} - {data?.items?.subcategory}
                   </p>
                   <div className="flex items-center mt-2">
-                    <span className="mr-1">Size</span>
+                    <span className="mr-1">Size:</span>
                     <span className="uppercase">
                       {data?.items?.variant_size}
                     </span>
                   </div>
+                  <div className="flex items-center mt-2">
+                    <span className="mr-1">Color:</span>
+                    <span className="uppercase">
+                      {data?.items?.variant_color}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
+                <div className="sm:flex sm:w-full sm:justify-between">
                   <div className="flex items-center border-gray-100">
                     <span className="mr-1">Qty</span>
                     <div className="flex items-center">
@@ -96,15 +101,13 @@ const Cart = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="flex items-center capitalize">
+                  <div className="flex items-center capitalize mt-4 sm:mt-0 sm:ml-4">
                     {data?.items?.variant_qty === data?.total_quantity
                       ? "no more quantity available"
                       : ""}
                   </div>
-                  <div className="flex items-center space-x-4">
-                    <p className="text-sm">
-                      ₹ {data?.items?.variant_price}
-                    </p>
+                  <div className="flex items-center space-x-4 mt-4 sm:mt-0 sm:ml-4">
+                    <p className="text-sm">₹ {data?.items?.variant_price}</p>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -139,7 +142,9 @@ const Cart = () => {
           <div className="flex justify-between">
             <p className="text-lg font-bold">Total</p>
             <div>
-              <p className="mb-1 text-lg font-bold">₹ {calculateTotal().toFixed(2)}</p>
+              <p className="mb-1 text-lg font-bold">
+                ₹ {calculateTotal().toFixed(2)}
+              </p>
               <p className="text-sm text-gray-700">including GST</p>
             </div>
           </div>

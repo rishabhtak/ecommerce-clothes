@@ -3,6 +3,19 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function UserOrders({ orders }) {
+  if (orders.length <= 0) {
+    return (
+      <div className="h-screen pt-20 text-center">
+        <div>Your Orders is empty</div>
+        <Link
+          href="/"
+          className="inline-block px-4 py-2 mt-6 bg-blue-500 text-white text-center rounded-md transition duration-300 hover:bg-blue-600"
+        >
+          Shop Now
+        </Link>
+      </div>
+    );
+  }
   return (
     <div>
       {orders &&

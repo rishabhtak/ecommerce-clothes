@@ -62,6 +62,7 @@ export default function LoginForm() {
             backgroundImage: 'url("/offers-banner.jpg")',
           }}
         />
+        <button type="submit" className="hidden" aria-hidden="true"></button>
         <div className="w-full px-6 py-8 md:px-8 lg:w-1/2">
           <p className="mt-3 text-xl text-center text-gray-600 capitalize">
             Sign in Page

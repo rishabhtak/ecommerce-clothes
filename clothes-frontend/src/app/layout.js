@@ -5,6 +5,7 @@ import "react-multi-carousel/lib/styles.css";
 import { Oswald, Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
 import CartContextProvider from "@/components/CartContextProvider";
+import "react-toastify/dist/ReactToastify.css";
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -29,11 +30,11 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={`${oswald.variable}`}>
       <body className={`${inter.className} antialiased`}>
-        <CartContextProvider session={session}>
-          <Header />
-          {children}
-        </CartContextProvider>
-        <Footer />
+          <CartContextProvider session={session}>
+            <Header />
+            {children}
+          </CartContextProvider>
+          <Footer />
       </body>
     </html>
   );

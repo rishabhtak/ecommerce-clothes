@@ -7,14 +7,12 @@ import { getProduct } from "@/lib/products";
 export default async function Home() {
   const menProducts = await getProduct({
     category: "men",
-    qty: { $gt: 0 },
     archived: false,
     featured: true,
   });
 
   const womenProducts = await getProduct({
     category: "women",
-    qty: { $gt: 0 },
     archived: false,
     featured: true,
   });

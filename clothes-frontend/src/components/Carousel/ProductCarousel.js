@@ -10,16 +10,38 @@ const ButtonGroup = ({ next, previous }) => {
   return (
     <div className="absolute top-[18%] md:top-[20%] left-[40%] md:left-[45%] lg:left-[47%] divide-x-4 divide-blue-200">
       <button onClick={() => previous()}>
-        <FaArrowLeftLong
-          size={30}
-          className="mr-2 text-gray-500 transition ease-in-out hover:text-blue-200 duration-300"
-        />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          data-slot="icon"
+          className="w-10 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+          />
+        </svg>
       </button>
       <button onClick={() => next()}>
-        <FaArrowRightLong
-          size={30}
-          className="ml-2 text-gray-500 transition ease-in-out hover:text-blue-200 duration-300"
-        />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          data-slot="icon"
+          className="w-10 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+          />
+        </svg>
       </button>
     </div>
   );
@@ -71,7 +93,7 @@ const ProductCarousel = ({ data }) => {
                   height={832}
                 />
                 <div className="w-56 mt-2 overflow-hidden md:w-64 select-none">
-                  <h3 className="py-2 font-semibold tracking-wide text-center text-gray-800 capitalize line-clamp-1">
+                  <h3 className="py-2 font-semibold tracking-wide text-center text-gray-800 capitalize">
                     {element.productName}
                   </h3>
                   <div className="flex items-center justify-between px-3 py-2 border-t border-gray-800">
@@ -79,12 +101,12 @@ const ProductCarousel = ({ data }) => {
                       {element?.discountPrice ? (
                         <>
                           <span className="mr-2 line-through">
-                            ₹{element.price}
+                            ₹{element.minPrice}
                           </span>
                           <span>₹{element.discountPrice}</span>
                         </>
                       ) : (
-                        <>₹{element.price}</>
+                        <>₹{element.minPrice}</>
                       )}
                     </span>
                     <span className="font-semibold text-amber-500">
