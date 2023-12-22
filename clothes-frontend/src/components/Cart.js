@@ -8,7 +8,6 @@ const Cart = () => {
   const { cartProducts, updateQuantity, removeProduct, session } =
     useContext(CartContext);
 
-    console.log(cartProducts)
   const calculateSubtotal = () => {
     return cartProducts.reduce((total, item) => {
       return total + item.total_price;

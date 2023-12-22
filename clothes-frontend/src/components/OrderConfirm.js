@@ -5,7 +5,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 const OrderConfirm = () => {
-  console.log("OrderConfirm");
   const ls = typeof window !== "undefined" ? window.localStorage : null;
   const { setSelectAddress, setCartProducts } = useContext(CartContext);
 

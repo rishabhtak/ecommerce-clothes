@@ -12,15 +12,6 @@ const ChooseAddress = () => {
   const [address, setAddress] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const finalPrice = cartProducts.reduce(
-    (amount, item) => amount + item.total_price,
-    0
-  );
-  const finalQuantity = cartProducts.reduce(
-    (total, item) => item.total_quantity + total,
-    0
-  );
-
   const getAddress = useCallback(async () => {
     try {
       const response = await fetch(`/api/address`, {
@@ -56,8 +47,6 @@ const ChooseAddress = () => {
       if (selectAddress && cartProducts) {
         const order = {
           items: cartProducts,
-          finalPrice: finalPrice,
-          finalQuantity: finalQuantity,
           userId: selectAddress.user,
           selectAddress,
           email: session?.user?.email,
@@ -71,7 +60,6 @@ const ChooseAddress = () => {
         if (responseData.status === 200) {
           stripe?.redirectToCheckout({ sessionId: responseData.sessionId });
         } else {
-          console.log(responseData);
           toast.error("Sorry order not created. Please try again later");
         }
       } else {
@@ -87,7 +75,6 @@ const ChooseAddress = () => {
   if (cartProducts.length <= 0) {
     return redirect("/");
   }
-  console.log(Boolean(selectAddress));
   return (
     <>
       <ToastContainer />

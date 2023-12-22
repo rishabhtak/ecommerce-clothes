@@ -1,46 +1,66 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Order } from "@/models/Order";
 import { User } from "@/models/User";
-import { Product } from "@/models/Product";
 import Stripe from "stripe";
 
 export async function POST(req) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   try {
     await mongooseConnect();
-    const { items, finalPrice, finalQuantity, userId, selectAddress, email } =
-      await req.json();
+    const { items, userId, selectAddress, email } = await req.json();
     let user = await User.findById(userId);
     if (user) {
-      let existingCustomer = await stripe.customers.retrieve(userId);
+      let existingCustomer;
+      try {
+        existingCustomer = await stripe.customers.retrieve(userId);
+      } catch (retrieveError) {
+        // Handle the error if retrieval fails
+        existingCustomer = null;
+      }
+
       let customer;
+
       if (existingCustomer) {
-        customer = await stripe.customers.update(userId, {
-          address: {
-            city: selectAddress.city,
-            state: selectAddress.state,
-            country: selectAddress.country,
-            line1: selectAddress.address,
-            postal_code: selectAddress.pincode,
-          },
-          email: email,
-          name: selectAddress.fullname,
-          phone: selectAddress.phone,
-        });
+        try {
+          customer = await stripe.customers.update(userId, {
+            address: {
+              city: selectAddress.city,
+              state: selectAddress.state,
+              country: selectAddress.country,
+              line1: selectAddress.address,
+              postal_code: selectAddress.pincode,
+            },
+            email: email,
+            name: selectAddress.fullname,
+            phone: selectAddress.phone,
+          });
+        } catch (updateError) {
+          return Response.json({
+            message: "Something went wrong,Please try again later",
+            status: 500,
+          });
+        }
       } else {
-        customer = await stripe.customers.create({
-          id: userId,
-          address: {
-            city: selectAddress.city,
-            state: selectAddress.state,
-            country: selectAddress.country,
-            line1: selectAddress.address,
-            postal_code: selectAddress.pincode,
-          },
-          email: email,
-          name: selectAddress.fullname,
-          phone: selectAddress.phone,
-        });
+        try {
+          customer = await stripe.customers.create({
+            id: userId,
+            address: {
+              city: selectAddress.city,
+              state: selectAddress.state,
+              country: selectAddress.country,
+              line1: selectAddress.address,
+              postal_code: selectAddress.pincode,
+            },
+            email: email,
+            name: selectAddress.fullname,
+            phone: selectAddress.phone,
+          });
+        } catch (createError) {
+          return Response.json({
+            message: "Something went wrong,Please try again later",
+            status: 500,
+          });
+        }
       }
 
       const extractingItems = await items.map((item, index) => ({
@@ -84,8 +104,6 @@ export async function POST(req) {
       });
     }
   } catch (error) {
-    console.log(error);
-
     return Response.json({
       message: "Something went wrong,Please try again later",
       status: 500,
