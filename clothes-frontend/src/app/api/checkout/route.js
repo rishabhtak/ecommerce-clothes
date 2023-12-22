@@ -12,46 +12,39 @@ export async function POST(req) {
       await req.json();
     let user = await User.findById(userId);
     if (user) {
-      const itemsWithStatus = items.map((item) => ({
-        ...item,
-        orderStatus: "pending",
-      }));
-
-      const createdOrder = await Order.create({
-        items: itemsWithStatus,
-        finalPrice,
-        finalQuantity,
-        paymentStatus: "unpaid",
-        user: {
-          id: userId,
-          email: email,
-        },
-        selectAddress,
-      });
-
-      //  const productId = "6539135b9d111774a30f2dff";
-
-      createdOrder.items.forEach(async (item) => {
-        const variantId = item.items.variant_id;
-        const totalQuantity = item.total_quantity;
-        const productId = item.items._id;
-
-        // Update product variant quantity based on order quantity
-        const updateQuery = {
-          $inc: {
-            "variants.$.qty": -1 * totalQuantity,
+      let existingCustomer = await stripe.customers.retrieve(userId);
+      let customer;
+      if (existingCustomer) {
+        customer = await stripe.customers.update(userId, {
+          address: {
+            city: selectAddress.city,
+            state: selectAddress.state,
+            country: selectAddress.country,
+            line1: selectAddress.address,
+            postal_code: selectAddress.pincode,
           },
-        };
-
-        // Find the product by _id and update the variant quantity
-        await Product.updateOne(
-          { _id: productId, "variants._id": variantId },
-          updateQuery
-        );
-      });
+          email: email,
+          name: selectAddress.fullname,
+          phone: selectAddress.phone,
+        });
+      } else {
+        customer = await stripe.customers.create({
+          id: userId,
+          address: {
+            city: selectAddress.city,
+            state: selectAddress.state,
+            country: selectAddress.country,
+            line1: selectAddress.address,
+            postal_code: selectAddress.pincode,
+          },
+          email: email,
+          name: selectAddress.fullname,
+          phone: selectAddress.phone,
+        });
+      }
 
       const extractingItems = await items.map((item, index) => ({
-        quantity: items[index].total_quantity,
+        quantity: items[index].total_quantity, //todo
         price_data: {
           currency: "inr",
           unit_amount: item.items.variant_price * 100,
@@ -60,7 +53,13 @@ export async function POST(req) {
             images: [item.items.images[0]],
             description: `Size: ${item.items.variant_size.toUpperCase()}, Color: ${item.items.variant_color.toUpperCase()}`,
             metadata: {
-              orderId: createdOrder._id.toString(),
+              product_id: item.items.product_id,
+              variant_id: item.items.variant_id,
+              variant_color: item.items.variant_color,
+              variant_size: item.items.variant_size,
+              category: item.items.category,
+              subcategory: item.items.subcategory,
+              slug: item.items.slug,
             },
           },
         },
@@ -69,18 +68,13 @@ export async function POST(req) {
         payment_method_types: ["card"],
         line_items: extractingItems,
         mode: "payment",
-        success_url: `${
-          process.env.NEXTAUTH_URL
-        }/orderconfirm?orderId=${createdOrder._id.toString()}`,
-        cancel_url: `${process.env.NEXTAUTH_URL}/address`,
-        metadata: {
-          orderId: createdOrder._id.toString(),
-        },
+        customer: customer.id,
+        success_url: `${process.env.NEXTAUTH_URL}/orderconfirm?status=success`,
+        cancel_url: `${process.env.NEXTAUTH_URL}/cart`,
       });
       return Response.json({
         message: "success",
         status: 200,
-        orderId: createdOrder._id.toString(),
         sessionId: session.id,
       });
     } else {
@@ -90,6 +84,8 @@ export async function POST(req) {
       });
     }
   } catch (error) {
+    console.log(error);
+
     return Response.json({
       message: "Something went wrong,Please try again later",
       status: 500,

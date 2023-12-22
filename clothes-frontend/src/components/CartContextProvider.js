@@ -27,7 +27,7 @@ const CartContextProvider = ({ children, session }) => {
         ...prev,
         {
           items: {
-            _id: product._id,
+            product_id: product._id,
             productName: product.productName,
             category: product.category,
             subcategory: product.subcategory,

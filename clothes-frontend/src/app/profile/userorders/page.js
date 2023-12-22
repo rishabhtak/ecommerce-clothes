@@ -7,7 +7,7 @@ const page = async () => {
   const session = await getServerSession();
 
   const orders = await getProductByUser({
-    "user.email": session?.user?.email,
+    "selectAddress.email": session?.user?.email,
   });
 
   return <UserOrders orders={orders} />;

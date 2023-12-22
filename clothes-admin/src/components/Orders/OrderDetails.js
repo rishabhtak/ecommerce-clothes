@@ -33,7 +33,7 @@ export default function OrderDetails({ id }) {
     try {
       const { value } = e.target;
       const updatedItems = order.items.map((item) => {
-        if (item.items.variant_id === selectItem.items.variant_id) {
+        if (item.variant_id === selectItem.variant_id) {
           // Update the orderStatus for the matched item
           return {
             ...item,
@@ -47,7 +47,8 @@ export default function OrderDetails({ id }) {
         ...prevOrder,
         items: updatedItems,
       }));
-      const response = await fetch("/api/orders", {
+
+        const response = await fetch("/api/orders", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -55,16 +56,16 @@ export default function OrderDetails({ id }) {
         body: JSON.stringify({
           id: order._id,
           orderStatus: value,
-          variant_id: selectItem.items.variant_id,
+          variant_id: selectItem.variant_id,
           paymentStatus: false,
         }),
-      });
+      }); 
       const data = await response.json();
       if (data.status === 200) {
         toast.success("Order status updated successfully");
       } else {
         toast.error("Error updating order status");
-      }
+      } 
     } catch (error) {
       toast.error("Something went wrong, Please try again");
     }
@@ -100,6 +101,7 @@ export default function OrderDetails({ id }) {
     }
   };
 
+  console.log(order);
   return (
     <>
       <ToastContainer />
@@ -114,13 +116,13 @@ export default function OrderDetails({ id }) {
                 <ul className="-my-6 divide-y divide-gray-200">
                   {order.items.map((item) => (
                     <li
-                      key={item.items.variant_id}
+                      key={item.variant_id}
                       className="flex flex-col py-6 sm:flex-row"
                     >
                       <div className="sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 mb-4 sm:mb-0">
                         <Image
-                          src={item.items.images[0]}
-                          alt={item.items.productName}
+                          src={item.images}
+                          alt={item.productName}
                           className="h-full w-full object-cover object-center"
                           height={400}
                           width={400}
@@ -130,18 +132,16 @@ export default function OrderDetails({ id }) {
                       <div className="ml-4 flex flex-1 flex-col">
                         <div>
                           <div className="flex justify-between text-base font-medium text-gray-900">
-                            <h1 className="capitalize">
-                              {item.items.productName}
-                            </h1>
+                            <h1 className="capitalize">{item.productName}</h1>
                           </div>
                           <p className="mt-1 text-sm text-gray-500 capitalize">
-                            {item.items.category} - {item.items.subcategory}
+                            {item.category} - {item.subcategory}
                           </p>
                           <p className="mt-1 text-sm text-gray-500 capitalize">
-                            Size: {item.items.variant_size}
+                            Size: {item.variant_size}
                           </p>
                           <p className="mt-1 text-sm text-gray-500 capitalize">
-                            Color: {item.items.variant_color}
+                            Color: {item.variant_color}
                           </p>
                         </div>
                         <div className="flex flex-1 items-end justify-between text-sm">
@@ -155,7 +155,7 @@ export default function OrderDetails({ id }) {
                           </div>
 
                           <div className="flex flex-col">
-                            <p>Price: ₹{item.items.variant_price}</p>
+                            <p>Price: ₹{item.variant_price}</p>
                             <p>Subtotal: {item.total_price}</p>
                           </div>
                         </div>
@@ -203,7 +203,7 @@ export default function OrderDetails({ id }) {
                   Name: {order.selectAddress.fullname}
                 </p>
                 <p className="text-base sm:text-sm leading-6 text-gray-900">
-                  Email: {order.user.email}
+                  Email: {order.selectAddress.email}
                 </p>
                 <p className="sm:overflow-ellipsis sm:whitespace-nowrap sm:max-w-xs text-xs sm:text-sm leading-5 text-gray-500 capitalize">
                   Address: {order.selectAddress.address}

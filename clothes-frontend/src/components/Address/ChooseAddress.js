@@ -10,6 +10,7 @@ const ChooseAddress = () => {
   const { session, setSelectAddress, selectAddress, cartProducts } =
     useContext(CartContext);
   const [address, setAddress] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const finalPrice = cartProducts.reduce(
     (amount, item) => amount + item.total_price,
@@ -50,6 +51,7 @@ const ChooseAddress = () => {
   );
 
   const handleOrder = async (e) => {
+    setLoading(true);
     try {
       if (selectAddress && cartProducts) {
         const order = {
@@ -69,6 +71,7 @@ const ChooseAddress = () => {
         if (responseData.status === 200) {
           stripe?.redirectToCheckout({ sessionId: responseData.sessionId });
         } else {
+          console.log(responseData);
           toast.error("Sorry order not created. Please try again later");
         }
       } else {
@@ -84,7 +87,7 @@ const ChooseAddress = () => {
   if (cartProducts.length <= 0) {
     return redirect("/");
   }
-
+  console.log(Boolean(selectAddress));
   return (
     <>
       <ToastContainer />
@@ -123,9 +126,16 @@ const ChooseAddress = () => {
 
       <button
         onClick={handleOrder}
-        className="inline-block w-full px-4 py-2 mt-6 mb-6 bg-blue-500 text-white text-center rounded-md transition duration-300 hover:bg-blue-600"
+        disabled={loading}
+        className={`inline-block w-full px-4 py-2 mt-6 mb-6 ${
+          loading && Boolean(selectAddress)
+            ? "bg-indigo-200"
+            : "bg-blue-500 hover:bg-blue-600"
+        }  text-white text-center rounded-md transition duration-300`}
       >
-        Continue To Payment
+        {loading && Boolean(selectAddress)
+          ? "Loading..."
+          : " Continue To Payment"}
       </button>
     </>
   );

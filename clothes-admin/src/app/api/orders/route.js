@@ -34,11 +34,7 @@ export async function PUT(req) {
         await Order.updateOne(
           {
             _id: id,
-            items: {
-              $elemMatch: {
-                "items.variant_id": variant_id,
-              },
-            },
+            "items.variant_id": variant_id,
           },
           {
             $set: {

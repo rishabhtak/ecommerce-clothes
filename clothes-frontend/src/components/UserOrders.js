@@ -30,13 +30,13 @@ export default function UserOrders({ orders }) {
                   <ul className="-my-6 divide-y divide-gray-200">
                     {order.items.map((item) => (
                       <li
-                        key={item.items.variant_id}
+                        key={item.variant_id}
                         className="flex flex-col py-6 sm:flex-row"
                       >
                         <div className="sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 mb-4 sm:mb-0">
                           <Image
-                            src={item.items.images[0]}
-                            alt={item.items.productName}
+                            src={item.images}
+                            alt={item.productName}
                             className="h-full w-full object-cover object-center"
                             height={400}
                             width={400}
@@ -47,21 +47,21 @@ export default function UserOrders({ orders }) {
                           <div>
                             <div className="flex justify-between text-base font-medium text-gray-900">
                               <Link
-                                href={`/${item.items.category}/${item.items.subcategory}/${item.items.slug}`}
+                                href={`/${item.category}/${item.subcategory}/${item.slug}`}
                               >
                                 <h1 className="capitalize">
-                                  {item.items.productName}
+                                  {item.productName}
                                 </h1>
                               </Link>
                             </div>
                             <p className="mt-1 text-sm text-gray-500 capitalize">
-                              {item.items.category} - {item.items.subcategory}
+                              {item.category} - {item.subcategory}
                             </p>
                             <p className="mt-1 text-sm text-gray-500 capitalize">
-                              Size: {item.items.variant_size}
+                              Size: {item.variant_size}
                             </p>
                             <p className="mt-1 text-sm text-gray-500 capitalize">
-                              Color: {item.items.variant_color}
+                              Color: {item.variant_color}
                             </p>
                           </div>
                           <div className="flex flex-1 items-end justify-between text-sm">
@@ -75,7 +75,7 @@ export default function UserOrders({ orders }) {
                             </div>
 
                             <div className="flex flex-col">
-                              <p>Price: ₹{item.items.variant_price}</p>
+                              <p>Price: ₹{item.variant_price}</p>
                               <p>Subtotal: {item.total_price}</p>
                             </div>
                           </div>
