@@ -43,7 +43,7 @@ const HeroSection = () => {
                 </p>
                 <div>
                   <Link
-                    href="/"
+                    href="/women/tops"
                     className="mt-3 text-white inline-flex items-center capitalize border border-white px-4 md:px-6 py-1 md:py-2 transition ease-in-out hover:bg-white hover:text-black duration-300 slideInBottom"
                   >
                     shop now
@@ -68,7 +68,7 @@ const HeroSection = () => {
                 </p>
                 <div>
                   <Link
-                    href="/"
+                    href="/men/shirt"
                     className="mt-3 text-white inline-flex items-center capitalize border border-white px-4 md:px-6 py-1 md:py-2 transition ease-in-out hover:bg-white hover:text-black duration-300 slideInBottom"
                   >
                     shop now
