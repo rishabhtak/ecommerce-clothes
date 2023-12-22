@@ -10,7 +10,7 @@ const createOrder = (lineItems) => {
     const item = {
       product_id: lineItem?.price?.product?.metadata?.product_id,
       variant_id: lineItem?.price?.product?.metadata?.variant_id,
-      productName: lineItem?.price?.product?.name,
+      productName: lineItem?.price?.product?.name.toLowerCase(),
       images: lineItem?.price?.product?.images[0],
       slug: lineItem?.price?.product?.metadata?.slug,
       category: lineItem?.price?.product?.metadata?.category,
@@ -107,7 +107,7 @@ export async function POST(req) {
             updateQuery
           );
         });
-       // console.log("order" + JSON.stringify(orderData, null, 2));
+        // console.log("order" + JSON.stringify(orderData, null, 2));
 
         break;
 
