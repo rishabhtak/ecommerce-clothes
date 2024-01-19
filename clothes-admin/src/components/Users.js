@@ -31,6 +31,7 @@ const Users = () => {
       });
       const data = await response.json();
       // Add sequential IDs to the data
+      console.log(data);
       const usersWithIds = data.users.map((user, index) => ({
         ...user,
         sno: index + 1,
