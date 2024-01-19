@@ -38,6 +38,7 @@ const Users = () => {
 
       setUsers(usersWithIds);
     } catch (error) {
+      console.log(error);
       toast.error("Error fetching users");
     }
   }
