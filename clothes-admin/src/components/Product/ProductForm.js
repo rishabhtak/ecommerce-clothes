@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import deleteImages from "@/app/utils/deleteImages";
 import VariantsTable from "../VariantsTable";
+import Image from "next/image";
 
 const ProductForm = ({
   _id,
@@ -264,7 +265,13 @@ const ProductForm = ({
                   key={link}
                   className="h-24 w-24 bg-white p-3 shadow-sm rounded-sm border border-gray-200 relative"
                 >
-                  <img src={link} alt="" className="rounded-lg" />
+                  <Image
+                    src={link}
+                    alt=""
+                    className="rounded-lg"
+                    width={100}
+                    height={100}
+                  />
                   <div
                     className="top-0 absolute right-0 cursor-pointer"
                     onClick={() => deleteImg(link)}
@@ -326,7 +333,10 @@ const ProductForm = ({
                 height: "500px",
               }}
               onChange={handleEditorChange}
-              renderHTML={(text) => <ReactMarkdown children={text} />}
+              renderHTML={(text) => {
+                // eslint-disable-next-line react/no-children-prop
+                <ReactMarkdown children={text} />;
+              }}
             />
           </div>
           {validationErrors.desc && (
