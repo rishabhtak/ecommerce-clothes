@@ -31,12 +31,11 @@ const Users = () => {
       });
       const data = await response.json();
       // Add sequential IDs to the data
-      console.log(data);
+      console.log(data.error);
       const usersWithIds = data.users.map((user, index) => ({
         ...user,
         sno: index + 1,
       }));
-
       setUsers(usersWithIds);
     } catch (error) {
       console.log(error);
