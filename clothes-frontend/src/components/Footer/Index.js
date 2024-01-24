@@ -74,6 +74,8 @@ const footerNavs = [
   },
 ];
 
+
+
 const Footer = () => {
   return (
     <footer className="text-gray-500 px-4 py-5 mx-auto md:px-8 bg-[#f4f4f4]">
