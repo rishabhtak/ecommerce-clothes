@@ -12,7 +12,7 @@ const HeroSection = () => {
               sale upto 40% off
             </p>
             <h1 className="text-2xl md:text-6xl text-white font-bold font-oswald mb-4 capitalize scaleUpCenter">
-              hexashop online store
+              Ecommerce online store
             </h1>
             <div>
               <Link

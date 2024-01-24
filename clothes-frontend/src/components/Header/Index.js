@@ -61,13 +61,7 @@ const Header = () => {
     >
       <Wrapper className="h-[60px] flex justify-between items-center">
         <Link href="/">
-          <Image
-            src="/logo.png"
-            alt="logo"
-            width={195}
-            height={59}
-            className="w-[80px] md:w-[100px] lg:w-[150px]"
-          />
+          <div>Logo</div>
         </Link>
 
         <Menu
