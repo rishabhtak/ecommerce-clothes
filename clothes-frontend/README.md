@@ -39,9 +39,7 @@ Technical Details :
 To get started with this project, run
 
 ```bash
-  git clone https://github.com/rishabhtak/ecommerce-clothes/tree/main/clothes-frontend.git
-  git clone https://github.com/rishabhtak/ecommerce-clothes/tree/main/clothes-admin.git
-
+  git clone https://github.com/rishabhtak/ecommerce-clothes.git
 
 ```
 
@@ -70,4 +68,3 @@ pnpm dev
 # or
 bun dev
 ```
-
