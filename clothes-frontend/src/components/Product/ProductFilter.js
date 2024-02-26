@@ -20,6 +20,7 @@ function classNames(...classes) {
 
 export default function ProductFilter({ data, colorOptions, sizeOptions }) {
   const { products, totalProducts } = data;
+  console.log(products);
 
   const filters = useMemo(
     () => [
@@ -60,7 +61,7 @@ export default function ProductFilter({ data, colorOptions, sizeOptions }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filter, setFilter] = useState({});
   const [currentSort, setCurrentSort] = useState(null);
-  const [productsData, setProductData] = useState(products || []);
+  const [productsData, setProductData] = useState([]);
 
   const handleSort = (direction) => {
     // Update the state to reflect the current sorting option
@@ -121,6 +122,7 @@ export default function ProductFilter({ data, colorOptions, sizeOptions }) {
   };
 
   useEffect(() => {
+    setProductData(products);
     let page = params.get("page") ? Number(params.get("page")) : 1;
     if (page !== 1) {
       params.set("page", 1);
@@ -135,7 +137,7 @@ export default function ProductFilter({ data, colorOptions, sizeOptions }) {
       }
     });
     replace(`${pathname}?${params}`);
-  }, [filter, filters, params, pathname, replace]);
+  }, [filter, filters, params, pathname, replace, products]);
 
   return (
     <div>
