@@ -122,6 +122,7 @@ export default function ProductFilter({ data, colorOptions, sizeOptions }) {
   };
 
   useEffect(() => {
+    // Handle product data
     setProductData(products);
     let page = params.get("page") ? Number(params.get("page")) : 1;
     if (page !== 1) {
