@@ -10,7 +10,7 @@ export async function POST(req) {
     if (user) {
       return Response.json({
         message: "User already exists,Please use another email",
-        status: 401,
+        status: 400,
       });
     }
     const hashedPassword = await hash(password, 10);

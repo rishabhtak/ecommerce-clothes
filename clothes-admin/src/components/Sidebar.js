@@ -159,7 +159,7 @@ const Sidebar = () => {
                     </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       className={`inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline ${
                         pathname === "/orders"
                           ? "bg-indigo-600"
@@ -186,7 +186,7 @@ const Sidebar = () => {
                         />
                       </svg>
                       <span className="ml-4">Orders</span>
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <div className="inline-flex items-center w-full px-4 py-2 mt-1 text-base text-white transition duration-500 ease-in-out transform border-indigo-800 rounded-lg hover:border-indigo-800 focus:shadow-outline hover:bg-indigo-600">
