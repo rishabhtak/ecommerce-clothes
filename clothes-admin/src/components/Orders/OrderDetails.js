@@ -102,7 +102,6 @@ export default function OrderDetails({ id }) {
     }
   };
 
-  console.log(order);
   return (
     <>
       <ToastContainer />
