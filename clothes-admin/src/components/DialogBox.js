@@ -2,7 +2,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { toast } from "react-toastify";
-import deleteImages from "@/app/utils/deleteImages";
 
 export default function DialogBox({
   showDialog,
@@ -24,8 +23,11 @@ export default function DialogBox({
         toast.error("Something got error, Please try again later");
         setShowDialog(false);
       } else {
-        images.forEach(async (filename) => {
-          await deleteImages(filename);
+        images.forEach(async (url) => {
+          // await deleteImages(filename);
+          await fetch(`/api/upload/?url=${url}`, {
+            method: "DELETE",
+          });
         });
         toast.success("Product deleted successfully");
         setShowDialog(false);
