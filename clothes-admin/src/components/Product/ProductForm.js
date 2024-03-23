@@ -8,7 +8,6 @@ import "react-markdown-editor-lite/lib/index.css";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import deleteImages from "@/app/utils/deleteImages";
 import VariantsTable from "../VariantsTable";
 import Image from "next/image";
 
@@ -134,11 +133,15 @@ const ProductForm = ({
     }
   }
 
-  async function deleteImg(link) {
-    let res = await deleteImages(link);
-    if (res.result === "ok") {
-      const newImages = images.filter((v) => v !== link);
-      setImages(newImages);
+  async function deleteImg(url) {
+    const res = await fetch(`/api/upload/?url=${url}`, {
+      method: "DELETE",
+    });
+    const deletedImageData = await res.json();
+     if (deletedImageData.status === 200) {
+      setImages((prev) => {
+        return prev.filter((elem) => elem !== url);
+      });
     }
   }
 
