@@ -2,9 +2,7 @@
 import Carousel from "react-multi-carousel";
 import Image from "next/image";
 import Wrapper from "../Wrapper/Index";
-import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import Link from "next/link";
-import ProductCard from "../Product/ProductCard";
 
 const ButtonGroup = ({ next, previous }) => {
   return (

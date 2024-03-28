@@ -4,6 +4,7 @@ import WomenSectionProduct from "@/components/Carousel/WomenSectionProduct";
 import Services from "@/components/Services/Index";
 import Testimonials from "@/components/Testimonials/Index";
 import { getProduct } from "@/lib/products";
+import ProductListsCategoriesGrid from "@/components/ProductListsCategoriesGrid";
 export default async function Home() {
   const menProducts = await getProduct({
     category: "men",
@@ -20,6 +21,7 @@ export default async function Home() {
   return (
     <>
       <HeroSection />
+      <ProductListsCategoriesGrid />
       <MenSectionProduct menProducts={menProducts} />
       <WomenSectionProduct womenProducts={womenProducts} />
       <Services />
