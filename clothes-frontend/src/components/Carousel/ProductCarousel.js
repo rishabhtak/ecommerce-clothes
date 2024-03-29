@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const ButtonGroup = ({ next, previous }) => {
   return (
-    <div className="absolute top-[18%] md:top-[20%] left-[40%] md:left-[45%] lg:left-[47%] divide-x-4 divide-blue-200">
+    <div className="absolute top-[18%] md:top-[20%] left-[40%] md:left-[45%] lg:left-[47%]">
       <button onClick={() => previous()}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -14,13 +14,12 @@ const ButtonGroup = ({ next, previous }) => {
           viewBox="0 0 24 24"
           strokeWidth="1.5"
           stroke="currentColor"
-          data-slot="icon"
-          className="w-10 h-6"
+          className="w-10 h-10"
         >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+            d="m11.25 9-3 3m0 0 3 3m-3-3h7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
           />
         </svg>
       </button>
@@ -31,13 +30,12 @@ const ButtonGroup = ({ next, previous }) => {
           viewBox="0 0 24 24"
           strokeWidth="1.5"
           stroke="currentColor"
-          data-slot="icon"
-          className="w-10 h-6"
+          className="w-10 h-10"
         >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+            d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
           />
         </svg>
       </button>
@@ -69,8 +67,8 @@ const ProductCarousel = ({ data }) => {
       <Carousel
         infinite={true}
         ssr={true}
-        draggable={false}
         responsive={responsive}
+        draggable={false}
         arrows={false}
         renderButtonGroupOutside={true}
         customButtonGroup={<ButtonGroup />}
@@ -84,7 +82,7 @@ const ProductCarousel = ({ data }) => {
             >
               <div className="flex flex-col items-center w-full max-w-[280px] mx-auto py-5">
                 <Image
-                  className="w-full h-64 bg-gray-300 bg-center bg-cover rounded-lg shadow-md pointer-events-none transition ease-in-out delay-150 hover:-translate-y-3"
+                  className="w-full h-64 bg-gray-300 bg-center bg-cover rounded-lg shadow-md transition ease-in-out delay-150 hover:-translate-y-3"
                   src={element.images[0]}
                   alt={element.productName}
                   width={624}
